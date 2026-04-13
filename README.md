@@ -1,0 +1,136 @@
+# Simple Web Application with MySQL
+
+โปรเจคเว็บแอปพลิเคชันแบบง่ายๆ ที่มี Backend (Node.js/Express) และ Frontend (HTML/CSS/JavaScript)
+
+## 📁 โครงสร้างโปรเจค
+
+```
+webprojectdrmtest/
+├── backend/              # Backend Node.js + Express
+│   ├── server.js        # Main server file
+│   ├── package.json     # Dependencies
+│   ├── .env             # Environment variables
+│   └── database.sql     # SQL script สำหรับสร้าง database
+└── frontend/            # Frontend
+    ├── index.html       # Main HTML
+    ├── style.css        # Stylesheet
+    └── script.js        # JavaScript logic
+```
+
+## 🚀 การติดตั้ง
+
+### 1. ติดตั้ง MySQL Database
+
+```sql
+-- ใช้ MySQL Workbench หรือ phpMyAdmin
+-- Import file: backend/database.sql
+-- หรือรัน SQL command ในด้านล่าง:
+
+CREATE DATABASE IF NOT EXISTS simple_web_db;
+USE simple_web_db;
+CREATE TABLE IF NOT EXISTS items (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### 2. ตั้งค่า Backend
+
+```bash
+cd backend
+npm install
+```
+
+เปิดไฟล์ `.env` และแก้ไข MySQL credentials:
+```
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password_here
+DB_NAME=simple_web_db
+PORT=5000
+```
+
+### 3. รัน Backend Server
+
+```bash
+cd backend
+npm start
+```
+
+สำหรับ development ใช้:
+```bash
+npm run dev
+```
+
+Server จะทำงานที่ `http://localhost:5000`
+
+### 4. เปิด Frontend
+
+เปิด `frontend/index.html` ด้วย Web Browser:
+- คลิกขวา → Open with → Browser
+- หรือลาก `index.html` เข้าไปในปลั๊กพอร์ตของ Browser
+
+## 📡 API Endpoints
+
+- `GET /api/items` - ดึงรายการทั้งหมด
+- `GET /api/items/:id` - ดึงรายการตาม ID
+- `POST /api/items` - เพิ่มรายการใหม่
+- `PUT /api/items/:id` - แก้ไขรายการ
+- `DELETE /api/items/:id` - ลบรายการ
+- `GET /health` - ตรวจสอบสถานะ Server
+
+## 🔧 Technologies Used
+
+- **Backend**: Node.js, Express.js
+- **Database**: MySQL
+- **Frontend**: HTML5, CSS3, Vanilla JavaScript
+- **Tools**: Nodemon, CORS, Body Parser
+
+## 📝 ข้อมูล Request Body
+
+### POST /api/items (Create)
+```json
+{
+  "name": "ชื่อรายการ",
+  "description": "รายละเอียด"
+}
+```
+
+### PUT /api/items/:id (Update)
+```json
+{
+  "name": "ชื่อรายการใหม่",
+  "description": "รายละเอียดใหม่"
+}
+```
+
+## 🐛 Troubleshooting
+
+### Cannot connect to database
+- ตรวจสอบว่า MySQL Server ทำงานอยู่
+- ตรวจสอบ credentials ในไฟล์ `.env`
+- ตรวจสอบว่า database `simple_web_db` ถูกสร้างแล้ว
+
+### CORS Error
+- ตรวจสอบว่า Backend server ทำงานอยู่ที่ port 5000
+- ตรวจสอบ CORS settings ใน `server.js`
+
+### Frontend cannot fetch data
+- เปิด Browser DevTools (F12) ดู Console
+- ตรวจสอบ Network tab เพื่อดู API calls
+- ตรวจสอบว่า API_URL ใน `script.js` ถูกต้อง
+
+## 🎯 ขั้นตอนต่อไป
+
+- [ ] ปรับปรุง UI/UX
+- [ ] เพิ่ม input validation
+- [ ] เพิ่ม authentication
+- [ ] เพิ่ม error handling
+- [ ] Deploy ไปบน server จริง
+
+---
+
+สร้างมาด้วย ❤️

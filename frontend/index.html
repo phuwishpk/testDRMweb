@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Web Application</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📋 Simple CRUD Application</h1>
+    
+    <div class="form-section">
+      <h2>เพิ่มรายการใหม่</h2>
+      <form id="itemForm">
+        <input 
+          type="text" 
+          id="itemName" 
+          placeholder="ชื่อรายการ" 
+          required
+        >
+        <textarea 
+          id="itemDesc" 
+          placeholder="รายละเอียด" 
+          rows="3"
+        ></textarea>
+        <button type="submit">เพิ่มรายการ</button>
+      </form>
+    </div>
+
+    <div class="list-section">
+      <h2>รายการทั้งหมด</h2>
+      <div id="itemsList" class="items-list">
+        <p>กำลังโหลด...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
