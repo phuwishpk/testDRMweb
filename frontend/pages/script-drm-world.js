@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Server URLs configuration
   const servers = {
-    server1: 'https://la6lukiwisdrth.ddns.net:8073',
-    server2: 'https://109.129.87.221:8073'
+    server1: 'http://la6lukiwisdrth.ddns.net:8073/',
+    server2: 'http://109.129.87.221:8073'
   };
 
   // Mark active navigation item
