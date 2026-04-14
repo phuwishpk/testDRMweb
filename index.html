@@ -20,7 +20,15 @@
   <nav class="navbar">
     <ul class="nav-menu">
       <li><a href="index.html">Home</a></li>
-      <li><a href="frontend/pages/about-drm.html">About DRM</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" onclick="return false;">About DRM</a>
+        <div class="dropdown-content">
+          <a href="frontend/pages/about-drm.html#what-is-drm" onclick="window.location.href='frontend/pages/about-drm.html#what-is-drm'">What is DRM</a>
+          <a href="frontend/pages/about-drm.html#the-drm-system" onclick="window.location.href='frontend/pages/about-drm.html#the-drm-system'">The DRM System</a>
+          <a href="frontend/pages/drm-content.html">DRM Content</a>
+          <a href="frontend/pages/radio-receiver.html">DRM Receivers</a>
+        </div>
+      </li>
       <li><a href="frontend/pages/thai-forum.html">Thai Forum</a></li>
       <li><a href="frontend/pages/news.html">News</a></li>
       <li><a href="frontend/pages/event.html">Event</a></li>
