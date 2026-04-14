@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radio Transmitter - Digital Radio Education</title>
+  <link rel="stylesheet" href="../style-index.css">
+  <style>
+    .content-section {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      color: #667eea;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #764ba2;
+      padding-bottom: 10px;
+    }
+    
+    .subsection {
+      margin: 25px 0;
+      padding-left: 20px;
+    }
+    
+    .subsection-title {
+      color: #555;
+      font-size: 1.3em;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    
+    .subsection p {
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    
+    .subsection ul {
+      margin: 10px 0;
+      padding-left: 40px;
+    }
+    
+    .subsection li {
+      margin-bottom: 8px;
+      color: #666;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <!-- Banner Section -->
+  <header class="banner">
+    <div class="banner-content">
+      <h1>Digital Radio Education (DRE)</h1>
+      <p class="subtitle">วิทยุดิจิทัลเพื่อการศึกษา</p>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <ul class="nav-menu">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="about-drm.html">About DRM</a></li>
+      <li><a href="thai-forum.html">Thai Forum</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="event.html">Event</a></li>
+      <li><a href="product.html">Product</a></li>
+      <li><a href="drm-world.html">DRM in World</a></li>
+      <li><a href="drm-elearning.html">DRM E-learning</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="content-section">
+      <h2 class="section-title">หลักการทำงานของระบบเครื่องส่ง DRM</h2>
+      
+      <p>การทำงานของระบบ DRM เริ่มจาก Content Server หรือศูนย์จัดการเนื้อหา ซึ่งทำหน้าที่รับข้อมูลเสียงและข้อมูลดิจิทัล จากนั้นจึงประมวลผล จัดแพ็กเกจข้อมูล และกำหนดค่าบริการต่าง ๆ เช่น ประเภทบริการ การเข้ารหัสเสียง และข้อมูลประกอบอย่าง Journaline หรือข้อมูลประกาศต่าง ๆ</p>
+
+      <p>เมื่อเตรียมข้อมูลเสร็จแล้ว ข้อมูลทั้งหมดจะถูกส่งต่อไปยัง Modulator ผ่านมาตรฐานการเชื่อมต่อ MDI (Multiplex Distribution Interface) และ DCP (Distribution and Communications Protocol) เพื่อให้ระบบของอุปกรณ์จากผู้ผลิตต่างรายสามารถทำงานร่วมกันได้อย่างยืดหยุ่น</p>
+
+      <p>ในขั้นตอนของ Modulator ระบบจะนำข้อมูลดิจิทัลที่ได้รับมาแปลงเป็นสัญญาณวิทยุที่พร้อมส่งออกอากาศ โดยผ่านกระบวนการสำคัญ เช่น การเข้ารหัสป้องกันความผิดพลาด การสลับลำดับข้อมูลเพื่อลดผลกระทบจากการเฟดดิ้ง และการมอดูเลตแบบ OFDM/COFDM ซึ่งเป็นเทคนิคที่ช่วยให้สัญญาณมีความทนทานต่อการรบกวนและเหมาะกับสภาพการแพร่กระจายคลื่นที่หลากหลาย</p>
+
+      <p>หลังจากนั้นสัญญาณจะถูกส่งไปยังภาคเครื่องส่งเพื่อขยายกำลังและกระจายออกสู่อากาศผ่านสายอากาศไปยังเครื่องรับของผู้ฟัง</p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">องค์ประกอบหลักของระบบ</h2>
+      
+      <p>ระบบเครื่องส่ง DRM โดยทั่วไปประกอบด้วย 4 ส่วนสำคัญ คือ</p>
+
+      <div class="subsection">
+        <h3 class="subsection-title">1) Content Server</h3>
+        <p>สำหรับจัดการเสียงและข้อมูล</p>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">2) Modulator</h3>
+        <p>สำหรับแปลงข้อมูลดิจิทัลเป็นสัญญาณวิทยุ</p>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">3) Transmitter</h3>
+        <p>สำหรับขยายกำลังสัญญาณและส่งออกอากาศ</p>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">4) Receiver</h3>
+        <p>สำหรับรับและถอดรหัสสัญญาณให้ผู้ฟังใช้งานได้ ทั้งในรูปแบบเสียง ข้อความ หรือบริการข้อมูลอื่น ๆ</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">จุดเด่นของระบบ DRM</h2>
+      
+      <p>ระบบ DRM สามารถรองรับการกระจายเสียงได้ทั้งในย่าน AM และ FM/VHF รองรับการให้บริการได้มากกว่าหนึ่งบริการในความถี่เดียว และสามารถส่งทั้งเสียงกับข้อมูลไปพร้อมกันได้</p>
+
+      <p>นอกจากนี้ยังช่วยเพิ่มความสะดวกในการใช้งาน เช่น:</p>
+      <ul>
+        <li>การค้นหาสถานีอัตโนมัติ</li>
+        <li>การแสดงข้อมูลชื่อบริการ</li>
+        <li>การสลับความถี่อัตโนมัติเมื่อสัญญาณเปลี่ยนแปลง</li>
+      </ul>
+
+      <p>จึงเหมาะสำหรับการใช้งานทั้งด้านวิทยุกระจายเสียงทั่วไป วิทยุเพื่อการศึกษา และระบบแจ้งเตือนภัยสาธารณะ</p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">ข้อความสรุปสั้นสำหรับหน้าแรกเว็บ</h2>
+      
+      <p>DRM คือระบบวิทยุกระจายเสียงดิจิทัลที่พัฒนาขึ้นเพื่อยกระดับการออกอากาศจากระบบแอนะล็อกเดิม ให้สามารถส่งทั้งเสียงและข้อมูลดิจิทัลได้อย่างมีประสิทธิภาพ โดยทำงานผ่านลำดับจาก Content Server ไปยัง Modulator และ Transmitter ก่อนส่งต่อไปยังเครื่องรับของผู้ฟัง</p>
+
+      <p>ช่วยให้การกระจายเสียงมีคุณภาพสูงขึ้น ประหยัดพลังงานมากขึ้น และรองรับบริการสมัยใหม่ เช่น:</p>
+      <ul>
+        <li>ข้อความ</li>
+        <li>ภาพ</li>
+        <li>ข้อมูลการเรียนรู้</li>
+        <li>การแจ้งเตือนฉุกเฉิน</li>
+      </ul>
+    </div>
+
+    <img src="../../images/รูปภาพ5.png" alt="รูปภาพ 5" style="max-width: 100%; height: auto; margin: 30px 0; border-radius: 10px;">
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Digital Radio Education (DRE). All rights reserved.</p>
+  </footer>
+
+  <script src="../script-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DRM Content - Digital Radio Education</title>
+  <link rel="stylesheet" href="../style-index.css">
+  <style>
+    .content-section {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      color: #667eea;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #764ba2;
+      padding-bottom: 10px;
+    }
+    
+    .subsection {
+      margin: 25px 0;
+      padding-left: 20px;
+    }
+    
+    .subsection-title {
+      color: #555;
+      font-size: 1.3em;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    
+    .subsection p {
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    
+    .subsection ul {
+      margin: 10px 0;
+      padding-left: 40px;
+    }
+    
+    .subsection li {
+      margin-bottom: 8px;
+      color: #666;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <!-- Banner Section -->
+  <header class="banner">
+    <div class="banner-content">
+      <h1>Digital Radio Education (DRE)</h1>
+      <p class="subtitle">วิทยุดิจิทัลเพื่อการศึกษา</p>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <ul class="nav-menu">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="about-drm.html">About DRM</a></li>
+      <li><a href="thai-forum.html">Thai Forum</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="event.html">Event</a></li>
+      <li><a href="product.html">Product</a></li>
+      <li><a href="drm-world.html">DRM in World</a></li>
+      <li><a href="drm-elearning.html">DRM E-learning</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="content-section">
+      <h2 class="section-title">6.1 ข้อมูลเมตาในการออกอากาศ (Broadcast Meta-data)</h2>
+      <p>ข้อมูลที่จำเป็น (Mandatory) จะระบุด้วยเครื่องหมาย {M}</p>
+      
+      <div class="subsection">
+        <h3 class="subsection-title">6.1.1 รหัสบริการ (Service ID) {M}</h3>
+        <ul>
+          <li>รหัสประจำแต่ละรายการ DRM ทั่วโลก</li>
+          <li>ใช้สำหรับระบบ AFS เพื่อให้เครื่องรับค้นหารายการได้แม้เปลี่ยนคลื่น</li>
+          <li>ไม่แสดงบนจอผู้ฟัง</li>
+          <li>กำหนดโดยผู้แพร่ภาพ (หรือหน่วยงานระดับชาติ)</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.1.2 ชื่อรายการ (Service Labelling) {M}</h3>
+        <ul>
+          <li>ข้อความสูงสุด 16 ตัวอักษร (UTF-8 สูงสุด 64 ไบต์)</li>
+          <li>แสดงเป็นชื่อสถานีบนจอผู้รับ</li>
+          <li>รองรับหลายภาษาและชุดอักขระ (ขึ้นอยู่กับผู้ผลิตเครื่องรับ)</li>
+          <li>อาจรวมเลขความถี่เพื่อช่วยให้ผู้ฟังจดจำ</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.1.3 ประเภทของรายการ (Programme Type)</h3>
+        <ul>
+          <li>ระบุประเภทเนื้อหา เช่น ข่าว ดนตรี ละคร</li>
+          <li>เครื่องรับบางรุ่นสามารถกรองรายการตามหมวดหมู่ได้</li>
+          <li>รองรับสูงสุด 29 ประเภท</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.1.4 ภาษาของรายการ (Service Language)</h3>
+        <ul>
+          <li>กำหนดภาษาได้ด้วยรหัส ISO</li>
+          <li>มีประโยชน์ในพื้นที่ที่มีหลายภาษา</li>
+          <li>เครื่องรับสามารถแสดงเฉพาะรายการในภาษาที่ผู้ฟังต้องการ</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.1.5 ประเทศต้นทาง (Country of Origin)</h3>
+        <ul>
+          <li>ระบุประเทศของ "สตูดิโอผลิตรายการ" ไม่ใช่สถานีส่ง</li>
+          <li>ใช้รหัส ISO ประเทศ</li>
+          <li>มีประโยชน์สำหรับผู้ฟังที่ต้องการติดตามข่าวจากประเทศบ้านเกิด</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.1.6 โลโก้สถานี (Station Logo)</h3>
+        <ul>
+          <li>ส่งโลโก้เป็นส่วนหนึ่งของข้อมูล SPI</li>
+          <li>ใช้แสดงบนจอสีในรถยนต์หรือเครื่องรับระดับสูง</li>
+          <li>รองรับ 4 ขนาดภาพ ใช้แบนด์วิธต่ำ</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">6.2 เนื้อหาเสียง (Audio Content)</h2>
+      
+      <div class="subsection">
+        <h3 class="subsection-title">6.2.1 การเข้ารหัสเสียง (Audio Coding)</h3>
+        <ul>
+          <li>ใช้ตัวเข้ารหัส MPEG xHE-AAC:
+            <ul>
+              <li>ทำงานที่ 6 kbps สำหรับโมโน</li>
+              <li>12 kbps สำหรับสเตอริโอ</li>
+              <li>รองรับเนื้อหาทั้งเสียงพูดและดนตรี</li>
+            </ul>
+          </li>
+          <li>ยังรองรับ AAC/HE-AACv2 สำหรับความเข้ากันได้ย้อนหลัง</li>
+          <li>หากแบนด์วิดธ์เพียงพอ รองรับระบบเสียงรอบทิศทาง (5.1) โดยใช้ MPEG Surround</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.2.2 การเพิ่มประสิทธิภาพคุณภาพเสียง</h3>
+        <ul>
+          <li>หลีกเลี่ยงการเข้ารหัส-ถอดรหัสหลายครั้ง (tandem coding)</li>
+          <li>ปัญหาเกิดจากตัวเข้ารหัสในแต่ละขั้นอาจแปลผลผิดจาก artefact ที่เกิดจากขั้นตอนก่อน</li>
+          <li>แนวทางที่ดีที่สุด:
+            <ul>
+              <li>ใช้ต้นฉบับเสียงที่มีคุณภาพสูง</li>
+              <li>เข้ารหัส DRM ที่ศูนย์กลาง เช่น สตูดิโอ</li>
+              <li>ใช้โปรโตคอล MDI ในการส่งเสียงไปยังเครื่องส่ง เพื่อคงคุณภาพเสียงและควบคุมค่าการส่งระยะไกลได้</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">6.3 บริการเสริม (Value-added Services)</h2>
+      
+      <div class="subsection">
+        <h3 class="subsection-title">6.3.1 ภาพรวม</h3>
+        <p>DRM รองรับบริการมัลติมีเดียและข้อมูลหลากหลาย เช่น:</p>
+        <ul>
+          <li>ข้อความรายการ (DRM Text)</li>
+          <li>ข่าว, สภาพอากาศ, กีฬาแบบโต้ตอบ (Journaline)</li>
+          <li>รูปภาพประกอบรายการ (Slideshow)</li>
+          <li>ตารางผังรายการ (SPI/EPG)</li>
+        </ul>
+        <p style="margin-top: 15px; font-style: italic; color: #555;"><strong>บางบริการเช่น TPEG</strong> ออกแบบมาสำหรับระบบนำทางในรถยนต์ (machine-to-machine)</p>
+        <p style="margin-top: 10px; font-size: 0.95em; color: #666;"><em>หมายเหตุ: ในโหมดความจุต่ำ (เช่น AM), บริการภาพควรใช้แบนด์วิดธ์รวมเพียง 2–4 kbps</em></p>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.3.2 ข้อความ DRM (DRM Text Messages)</h3>
+        <ul>
+          <li>แสดงข้อมูลทันที เช่น ชื่อเพลง ข่าวสั้น หรือข้อมูลรายการ</li>
+          <li>แสดงในรูปแบบ "scrolling text" บนจอรับฟัง</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.3.3 Journaline</h3>
+        <ul>
+          <li>บริการข้อความโต้ตอบได้</li>
+          <li>จัดหมวดหมู่ข่าว สภาพอากาศ กีฬา ฯลฯ</li>
+          <li>ผู้ใช้สามารถเลือกหัวข้อที่สนใจได้</li>
+          <li>รองรับหลายภาษา และใช้งานในระบบวิทยุแบบ Free-to-Air ได้</li>
+          <li>เหมาะกับผู้ใช้ที่ต้องการเนื้อหาแบบ On-Demand โดยไม่ต้องเชื่อมต่ออินเทอร์เน็ต</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.3.4 ข้อมูลสถานีและรายการ (SPI – Service and Programme Information)</h3>
+        <ul>
+          <li>คล้ายกับ EPG (Electronic Programme Guide)</li>
+          <li>บอกตารางการออกอากาศ พร้อมข้อมูลรายการ</li>
+          <li>ช่วยให้เครื่องรับ:
+            <ul>
+              <li>แสดงข้อมูล</li>
+              <li>บันทึกรายการล่วงหน้าได้ (หากรองรับ)</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.3.5 สไลด์โชว์ (Slideshow)</h3>
+        <ul>
+          <li>แสดงรูปภาพประกอบรายการ เช่น ปกอัลบั้ม โลโก้สถานี หรือภาพข่าว</li>
+          <li>ต้องใช้เครื่องรับที่มีหน้าจอสี</li>
+          <li>ใช้แบนด์วิดธ์เล็กน้อย</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.3.6 TPEG</h3>
+        <ul>
+          <li>บริการข้อมูลจราจรและการเดินทาง</li>
+          <li>ใช้ในระบบนำทางอัจฉริยะ (M2M)</li>
+          <li>ควบคู่กับ Journaline สำหรับผู้ใช้งานทั่วไป</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">6.4 ฟีเจอร์เตือนภัยฉุกเฉิน DRM (Emergency Warning Feature – EWF)</h2>
+      
+      <div class="subsection">
+        <h3 class="subsection-title">6.4.1 ภาพรวม</h3>
+        <ul>
+          <li>DRM สามารถใช้เป็น <strong>ช่องสื่อสารสุดท้าย</strong> ในสถานการณ์ฉุกเฉิน เช่น ภัยธรรมชาติ</li>
+          <li>สัญญาณวิทยุสามารถครอบคลุมพื้นที่ที่โครงข่ายอื่นล่มได้</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.4.2 หน้าที่</h3>
+        <ul>
+          <li>แจ้งเตือนผู้ฟังอย่างทั่วถึงและทันเวลา</li>
+          <li>ผสานเสียง, ข้อความ DRM, และ Journaline หลายภาษา</li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.4.3 การทำงาน</h3>
+        <ul>
+          <li>เครื่องรับสามารถ:
+            <ul>
+              <li>เปิดขึ้นอัตโนมัติจากโหมดสแตนด์บาย</li>
+              <li>สลับไปยังรายการเตือนภัย</li>
+              <li>แสดงข้อความ, สัญลักษณ์เตือน, และเพิ่มระดับเสียงโดยอัตโนมัติ</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">6.4.4 การนำไปใช้งาน</h3>
+        <ul>
+          <li>ใช้งานได้ในระดับท้องถิ่น ภูมิภาค หรือประเทศ</li>
+          <li>ออกอากาศจากสถานีที่อยู่นอกพื้นที่ภัยพิบัติ</li>
+          <li>เพิ่มความสามารถในการแจ้งเตือนแบบหลายภาษาและแสดงข้อมูลที่เจาะจงพื้นที่</li>
+        </ul>
+      </div>
+    </div>
+
+    <img src="../../images/รูปภาพ4.png" alt="รูปภาพ 4" style="max-width: 100%; height: auto; margin: 30px 0; border-radius: 10px;">
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Digital Radio Education (DRE). All rights reserved.</p>
+  </footer>
+
+  <script src="../script-index.js"></script>
+</body>
+</html>
