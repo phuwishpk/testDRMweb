@@ -2,10 +2,10 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log('DRM in World page loaded');
   
-  // Server URLs configuration - use protocol-relative URLs to avoid Mixed Content
+  // Server URLs configuration
   const servers = {
-    server1: '//la6lukiwisdrth.ddns.net:8073',
-    server2: '//109.129.87.221:8073'
+    server1: 'http://la6lukiwisdrth.ddns.net:8073',
+    server2: 'http://109.129.87.221:8073'
   };
 
   // Mark active navigation item
