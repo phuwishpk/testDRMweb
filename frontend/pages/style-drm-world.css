@@ -133,6 +133,39 @@ main {
   align-items: center;
 }
 
+/* Help Message */
+.help-message {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 12px 15px;
+  margin: 15px 0;
+  border-radius: 4px;
+  display: block;
+}
+
+.help-message.hide {
+  display: none;
+}
+
+.help-message p {
+  color: #856404;
+  font-size: 0.95em;
+  margin: 0;
+  font-weight: 500;
+}
+
+.help-message a {
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.help-message a:hover {
+  text-decoration: underline;
+  color: #004085;
+}
+
 .control-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;

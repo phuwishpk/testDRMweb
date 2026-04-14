@@ -19,17 +19,41 @@ document.addEventListener('DOMContentLoaded', function() {
   // Server selector functionality
   const serverSelect = document.getElementById('serverSelect');
   const drmWorldIframe = document.getElementById('drmWorldIframe');
+  const helpMessage = document.querySelector('.help-message');
 
   if (serverSelect && drmWorldIframe) {
     // Load default server (Server 1)
     serverSelect.value = 'server1';
     drmWorldIframe.src = servers.server1;
 
+    // Handle iframe load
+    if (helpMessage) {
+      const hideHelpMessage = function() {
+        helpMessage.classList.add('hide');
+        console.log('Content loaded, hiding help message');
+      };
+      
+      drmWorldIframe.addEventListener('load', hideHelpMessage);
+      window.addEventListener('load', function() {
+        // If still showing after 5 seconds, keep it visible
+        setTimeout(function() {
+          if (helpMessage && !helpMessage.classList.contains('hide')) {
+            console.log('Help message still visible - server might not be responding');
+          }
+        }, 5000);
+      });
+    }
+
     // Handle server selection change
     serverSelect.addEventListener('change', function() {
       const selectedServer = this.value;
       const serverUrl = servers[selectedServer];
       console.log('Server changed to:', selectedServer, 'URL:', serverUrl);
+      
+      // Show help message on server change
+      if (helpMessage) {
+        helpMessage.classList.remove('hide');
+      }
       
       // Disable select temporarily during switch
       serverSelect.disabled = true;
