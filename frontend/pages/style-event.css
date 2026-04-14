@@ -1,0 +1,46 @@
+/* Event Page Specific Styles */
+html, body {
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.page-content {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-content h2 {
+  color: #667eea;
+  font-size: 2.5em;
+  margin-bottom: 30px;
+  border-bottom: 3px solid #764ba2;
+  padding-bottom: 15px;
+}
+
+.page-content h3 {
+  color: #555;
+  font-size: 1.5em;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+.page-content p {
+  font-size: 1.1em;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.footer {
+  margin-top: auto;
+}
