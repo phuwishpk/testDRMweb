@@ -18,7 +18,7 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       margin-bottom: 30px;
     }
-    
+
     .section-title {
       color: #667eea;
       font-size: 1.8em;
@@ -26,34 +26,63 @@
       border-bottom: 3px solid #764ba2;
       padding-bottom: 10px;
     }
-    
+
     .subsection {
       margin: 25px 0;
       padding-left: 20px;
     }
-    
+
     .subsection-title {
       color: #555;
       font-size: 1.3em;
       margin-bottom: 12px;
       font-weight: 600;
     }
-    
+
     .subsection p {
       color: #666;
       line-height: 1.8;
       margin-bottom: 12px;
     }
-    
+
     .subsection ul {
       margin: 10px 0;
       padding-left: 40px;
     }
-    
+
     .subsection li {
       margin-bottom: 8px;
       color: #666;
       line-height: 1.6;
+    }
+
+    .image-box {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .image-box img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .image-box p {
+      margin-top: 10px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .note-text {
+      margin-top: 15px;
+      font-style: italic;
+      color: #555;
+    }
+
+    .note-small {
+      margin-top: 10px;
+      font-size: 0.95em;
+      color: #666;
     }
   </style>
 </head>
@@ -91,32 +120,52 @@
 
   <!-- Main Content -->
   <main class="container">
+
     <div class="content-section">
-      <h2 class="section-title">1.ข้อมูลเมตาในการออกอากาศ (Broadcast Meta-data)</h2>
+      <h2 class="section-title">เนื้อหา DRM (DRM Content)</h2>
+      <p>
+        องค์ประกอบของเนื้อหาในการออกอากาศ DRM สามารถแบ่งได้เป็น 4 หมวดหลัก ได้แก่
+        ข้อมูลเมตา (Meta-data) ที่จำเป็นสำหรับการทำงานของระบบ, ข้อมูลเพิ่มเติมที่สถานีสามารถใส่เพิ่มได้และเครื่องรับจะรองรับโดยอัตโนมัติ,
+        เนื้อหาเสียง (Audio Content) ทั้งด้านการเข้ารหัสและคุณภาพ, และบริการเสริม (Value-added Services)
+        เช่น ข้อความ ข้อมูลข่าวสาร รูปภาพ และบริการโต้ตอบ
+      </p>
+      <p>
+        หมวด 1–3 จะถูกรองรับโดยเครื่องรับที่เป็นไปตามมาตรฐาน DRM โดยอัตโนมัติ
+        ส่วนหมวด 4 อาจต้องประสานงานระหว่างผู้แพร่ภาพและผู้ผลิตเครื่องรับ
+      </p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="section-title">ข้อมูลเมตาในการออกอากาศ (Broadcast Meta-data)</h2>
       <p>ข้อมูลที่จำเป็น (Mandatory) จะระบุด้วยเครื่องหมาย {M}</p>
-      
+
       <div class="subsection">
-        <h3 class="subsection-title">1.1 รหัสบริการ (Service ID) {M}</h3>
+        <h3 class="subsection-title">รหัสบริการ (Service ID) {M}</h3>
         <ul>
           <li>รหัสประจำแต่ละรายการ DRM ทั่วโลก</li>
           <li>ใช้สำหรับระบบ AFS เพื่อให้เครื่องรับค้นหารายการได้แม้เปลี่ยนคลื่น</li>
           <li>ไม่แสดงบนจอผู้ฟัง</li>
-          <li>กำหนดโดยผู้แพร่ภาพ (หรือหน่วยงานระดับชาติ)</li>
+          <li>กำหนดโดยผู้แพร่ภาพ หรือหน่วยงานระดับชาติ</li>
         </ul>
       </div>
 
       <div class="subsection">
-        <h3 class="subsection-title">1.2 ชื่อรายการ (Service Labelling) {M}</h3>
+        <h3 class="subsection-title">ชื่อรายการ (Service Labelling) {M}</h3>
         <ul>
           <li>ข้อความสูงสุด 16 ตัวอักษร (UTF-8 สูงสุด 64 ไบต์)</li>
           <li>แสดงเป็นชื่อสถานีบนจอผู้รับ</li>
-          <li>รองรับหลายภาษาและชุดอักขระ (ขึ้นอยู่กับผู้ผลิตเครื่องรับ)</li>
+          <li>รองรับหลายภาษาและชุดอักขระ ขึ้นอยู่กับผู้ผลิตเครื่องรับ</li>
           <li>อาจรวมเลขความถี่เพื่อช่วยให้ผู้ฟังจดจำ</li>
         </ul>
       </div>
 
+      <div class="image-box">
+        <img src="../../images/รูปภาพ17.png" alt="รูปภาพ 17">
+        <p>รูปภาพ 17 ชื่อรายการ</p>
+      </div>
+
       <div class="subsection">
-        <h3 class="subsection-title">1.3 ประเภทของรายการ (Programme Type)</h3>
+        <h3 class="subsection-title">ประเภทของรายการ (Programme Type)</h3>
         <ul>
           <li>ระบุประเภทเนื้อหา เช่น ข่าว ดนตรี ละคร</li>
           <li>เครื่องรับบางรุ่นสามารถกรองรายการตามหมวดหมู่ได้</li>
@@ -124,8 +173,13 @@
         </ul>
       </div>
 
+      <div class="image-box">
+        <img src="../../images/รูปภาพ18.png" alt="รูปภาพ 18">
+        <p>รูปภาพ 18 ประเภทของรายการ</p>
+      </div>
+
       <div class="subsection">
-        <h3 class="subsection-title">1.4 ภาษาของรายการ (Service Language)</h3>
+        <h3 class="subsection-title">ภาษาของรายการ (Service Language)</h3>
         <ul>
           <li>กำหนดภาษาได้ด้วยรหัส ISO</li>
           <li>มีประโยชน์ในพื้นที่ที่มีหลายภาษา</li>
@@ -133,49 +187,57 @@
         </ul>
       </div>
 
+      <div class="image-box">
+        <img src="../../images/รูปภาพ19.png" alt="รูปภาพ 19">
+        <p>รูปภาพ 19 ภาษาของรายการ</p>
+      </div>
+
       <div class="subsection">
-        <h3 class="subsection-title">1.5 ประเทศต้นทาง (Country of Origin)</h3>
+        <h3 class="subsection-title">ประเทศต้นทาง (Country of Origin)</h3>
         <ul>
-          <li>ระบุประเทศของ "สตูดิโอผลิตรายการ" ไม่ใช่สถานีส่ง</li>
+          <li>ระบุประเทศของ “สตูดิโอผลิตรายการ” ไม่ใช่สถานีส่ง</li>
           <li>ใช้รหัส ISO ประเทศ</li>
           <li>มีประโยชน์สำหรับผู้ฟังที่ต้องการติดตามข่าวจากประเทศบ้านเกิด</li>
         </ul>
       </div>
 
       <div class="subsection">
-        <h3 class="subsection-title">1.6 โลโก้สถานี (Station Logo)</h3>
+        <h3 class="subsection-title">โลโก้สถานี (Station Logo)</h3>
         <ul>
           <li>ส่งโลโก้เป็นส่วนหนึ่งของข้อมูล SPI</li>
           <li>ใช้แสดงบนจอสีในรถยนต์หรือเครื่องรับระดับสูง</li>
-          <li>รองรับ 4 ขนาดภาพ ใช้แบนด์วิธต่ำ</li>
+          <li>รองรับ 4 ขนาดภาพ และใช้แบนด์วิดธ์ต่ำ</li>
         </ul>
       </div>
+
     </div>
 
     <div class="content-section">
-      <h2 class="section-title">2. เนื้อหาเสียง (Audio Content)</h2>
-      
+      <h2 class="section-title">เนื้อหาเสียง (Audio Content)</h2>
+
       <div class="subsection">
-        <h3 class="subsection-title">2.1 การเข้ารหัสเสียง (Audio Coding)</h3>
+        <h3 class="subsection-title">การเข้ารหัสเสียง (Audio Coding)</h3>
         <ul>
-          <li>ใช้ตัวเข้ารหัส MPEG xHE-AAC:
-            <ul>
-              <li>ทำงานที่ 6 kbps สำหรับโมโน</li>
-              <li>12 kbps สำหรับสเตอริโอ</li>
-              <li>รองรับเนื้อหาทั้งเสียงพูดและดนตรี</li>
-            </ul>
-          </li>
-          <li>ยังรองรับ AAC/HE-AACv2 สำหรับความเข้ากันได้ย้อนหลัง</li>
+          <li>ใช้ตัวเข้ารหัส MPEG xHE-AAC</li>
+          <li>รองรับการทำงานที่ 6 kbps สำหรับโมโน</li>
+          <li>รองรับการทำงานที่ 12 kbps สำหรับสเตอริโอ</li>
+          <li>รองรับเนื้อหาทั้งเสียงพูดและดนตรี</li>
+          <li>ยังรองรับ AAC และ HE-AACv2 สำหรับความเข้ากันได้ย้อนหลัง</li>
           <li>หากแบนด์วิดธ์เพียงพอ รองรับระบบเสียงรอบทิศทาง (5.1) โดยใช้ MPEG Surround</li>
         </ul>
       </div>
 
+      <div class="image-box">
+        <img src="../../images/รูปภาพ20.png" alt="รูปภาพ 20">
+        <p>รูปภาพ 20 เนื้อหาเสียงและการเข้ารหัสเสียงของ DRM</p>
+      </div>
+
       <div class="subsection">
-        <h3 class="subsection-title">2.2 การเพิ่มประสิทธิภาพคุณภาพเสียง</h3>
+        <h3 class="subsection-title">การเพิ่มประสิทธิภาพคุณภาพเสียง</h3>
         <ul>
           <li>หลีกเลี่ยงการเข้ารหัส-ถอดรหัสหลายครั้ง (tandem coding)</li>
           <li>ปัญหาเกิดจากตัวเข้ารหัสในแต่ละขั้นอาจแปลผลผิดจาก artefact ที่เกิดจากขั้นตอนก่อน</li>
-          <li>แนวทางที่ดีที่สุด:
+          <li>แนวทางที่ดีที่สุด ได้แก่
             <ul>
               <li>ใช้ต้นฉบับเสียงที่มีคุณภาพสูง</li>
               <li>เข้ารหัส DRM ที่ศูนย์กลาง เช่น สตูดิโอ</li>
@@ -184,59 +246,71 @@
           </li>
         </ul>
       </div>
+
+
     </div>
 
     <div class="content-section">
-      <h2 class="section-title">3. บริการเสริม (Value-added Services)</h2>
-      
+      <h2 class="section-title">บริการเสริม (Value-added Services)</h2>
+
       <div class="subsection">
-        <h3 class="subsection-title">3.1 ภาพรวม</h3>
-        <p>DRM รองรับบริการมัลติมีเดียและข้อมูลหลากหลาย เช่น:</p>
+        <h3 class="subsection-title">ภาพรวม</h3>
+        <p>DRM รองรับบริการมัลติมีเดียและข้อมูลหลากหลาย เช่น</p>
         <ul>
           <li>ข้อความรายการ (DRM Text)</li>
-          <li>ข่าว, สภาพอากาศ, กีฬาแบบโต้ตอบ (Journaline)</li>
+          <li>ข่าว สภาพอากาศ และกีฬาแบบโต้ตอบ (Journaline)</li>
           <li>รูปภาพประกอบรายการ (Slideshow)</li>
           <li>ตารางผังรายการ (SPI/EPG)</li>
         </ul>
-        <p style="margin-top: 15px; font-style: italic; color: #555;"><strong>บางบริการเช่น TPEG</strong> ออกแบบมาสำหรับระบบนำทางในรถยนต์ (machine-to-machine)</p>
-        <p style="margin-top: 10px; font-size: 0.95em; color: #666;"><em>หมายเหตุ: ในโหมดความจุต่ำ (เช่น AM), บริการภาพควรใช้แบนด์วิดธ์รวมเพียง 2–4 kbps</em></p>
+        <p class="note-text"><strong>บางบริการเช่น TPEG</strong> ออกแบบมาสำหรับระบบนำทางในรถยนต์ (machine-to-machine)</p>
+        <p class="note-small"><em>หมายเหตุ: ในโหมดความจุต่ำ เช่น AM บริการภาพควรใช้แบนด์วิดธ์รวมเพียง 2–4 kbps</em></p>
       </div>
 
       <div class="subsection">
-        <h3 class="subsection-title">3.2 ข้อความ DRM (DRM Text Messages)</h3>
+        <h3 class="subsection-title">ข้อความ DRM (DRM Text Messages)</h3>
         <ul>
           <li>แสดงข้อมูลทันที เช่น ชื่อเพลง ข่าวสั้น หรือข้อมูลรายการ</li>
-          <li>แสดงในรูปแบบ "scrolling text" บนจอรับฟัง</li>
+          <li>แสดงในรูปแบบข้อความเลื่อน (scrolling text) บนจอรับฟัง</li>
         </ul>
       </div>
 
       <div class="subsection">
-        <h3 class="subsection-title">3.3 Journaline</h3>
+        <h3 class="subsection-title">Journaline</h3>
         <ul>
-          <li>บริการข้อความโต้ตอบได้</li>
-          <li>จัดหมวดหมู่ข่าว สภาพอากาศ กีฬา ฯลฯ</li>
+          <li>เป็นบริการข้อความแบบโต้ตอบได้</li>
+          <li>จัดหมวดหมู่ข่าว สภาพอากาศ กีฬา และเนื้อหาอื่น ๆ</li>
           <li>ผู้ใช้สามารถเลือกหัวข้อที่สนใจได้</li>
           <li>รองรับหลายภาษา และใช้งานในระบบวิทยุแบบ Free-to-Air ได้</li>
           <li>เหมาะกับผู้ใช้ที่ต้องการเนื้อหาแบบ On-Demand โดยไม่ต้องเชื่อมต่ออินเทอร์เน็ต</li>
         </ul>
       </div>
 
+      <div class="image-box">
+        <img src="../../images/รูปภาพ21.png" alt="รูปภาพ 21">
+        <p>รูปภาพ 21 Journaline</p>
+      </div>
+
       <div class="subsection">
-        <h3 class="subsection-title">3.4 ข้อมูลสถานีและรายการ (SPI – Service and Programme Information)</h3>
+        <h3 class="subsection-title">ข้อมูลสถานีและรายการ (SPI – Service and Programme Information)</h3>
         <ul>
-          <li>คล้ายกับ EPG (Electronic Programme Guide)</li>
-          <li>บอกตารางการออกอากาศ พร้อมข้อมูลรายการ</li>
-          <li>ช่วยให้เครื่องรับ:
+          <li>มีลักษณะคล้ายกับ EPG (Electronic Programme Guide)</li>
+          <li>แสดงตารางการออกอากาศพร้อมข้อมูลรายการ</li>
+          <li>ช่วยให้เครื่องรับสามารถ
             <ul>
-              <li>แสดงข้อมูล</li>
-              <li>บันทึกรายการล่วงหน้าได้ (หากรองรับ)</li>
+              <li>แสดงข้อมูลรายการ</li>
+              <li>บันทึกรายการล่วงหน้าได้ หากเครื่องรับรองรับ</li>
             </ul>
           </li>
         </ul>
       </div>
 
+      <div class="image-box">
+        <img src="../../images/รูปภาพ22.png" alt="รูปภาพ 22">
+        <p>รูปภาพ 22 SPI</p>
+      </div>
+
       <div class="subsection">
-        <h3 class="subsection-title">3.5 สไลด์โชว์ (Slideshow)</h3>
+        <h3 class="subsection-title">สไลด์โชว์ (Slideshow)</h3>
         <ul>
           <li>แสดงรูปภาพประกอบรายการ เช่น ปกอัลบั้ม โลโก้สถานี หรือภาพข่าว</li>
           <li>ต้องใช้เครื่องรับที่มีหน้าจอสี</li>
@@ -245,49 +319,59 @@
       </div>
 
       <div class="subsection">
-        <h3 class="subsection-title">3.6 TPEG</h3>
+        <h3 class="subsection-title">TPEG</h3>
         <ul>
           <li>บริการข้อมูลจราจรและการเดินทาง</li>
           <li>ใช้ในระบบนำทางอัจฉริยะ (M2M)</li>
-          <li>ควบคู่กับ Journaline สำหรับผู้ใช้งานทั่วไป</li>
+          <li>ใช้งานควบคู่กับ Journaline สำหรับผู้ใช้งานทั่วไป</li>
         </ul>
+      </div>
+
+      <div class="image-box">
+        <img src="../../images/รูปภาพ23.png" alt="รูปภาพ 23">
+        <p>รูปภาพ 23 TPEG</p>
       </div>
     </div>
 
     <div class="content-section">
-      <h2 class="section-title">4. ฟีเจอร์เตือนภัยฉุกเฉิน DRM (Emergency Warning Feature – EWF)</h2>
-      
+      <h2 class="section-title">ฟีเจอร์เตือนภัยฉุกเฉิน DRM (Emergency Warning Feature – EWF)</h2>
+
       <div class="subsection">
-        <h3 class="subsection-title"4.1 ภาพรวม</h3>
+        <h3 class="subsection-title">ภาพรวม</h3>
         <ul>
-          <li>DRM สามารถใช้เป็น <strong>ช่องสื่อสารสุดท้าย</strong> ในสถานการณ์ฉุกเฉิน เช่น ภัยธรรมชาติ</li>
+          <li>DRM สามารถใช้เป็นช่องสื่อสารสุดท้ายในสถานการณ์ฉุกเฉิน เช่น ภัยธรรมชาติ</li>
           <li>สัญญาณวิทยุสามารถครอบคลุมพื้นที่ที่โครงข่ายอื่นล่มได้</li>
         </ul>
       </div>
 
       <div class="subsection">
-        <h3 class="subsection-title">4.2 หน้าที่</h3>
+        <h3 class="subsection-title">หน้าที่</h3>
         <ul>
           <li>แจ้งเตือนผู้ฟังอย่างทั่วถึงและทันเวลา</li>
-          <li>ผสานเสียง, ข้อความ DRM, และ Journaline หลายภาษา</li>
+          <li>ผสานเสียง ข้อความ DRM และ Journaline หลายภาษา</li>
         </ul>
       </div>
 
       <div class="subsection">
-        <h3 class="subsection-title">4.3 การทำงาน</h3>
+        <h3 class="subsection-title">การทำงาน</h3>
         <ul>
-          <li>เครื่องรับสามารถ:
+          <li>เครื่องรับสามารถ
             <ul>
               <li>เปิดขึ้นอัตโนมัติจากโหมดสแตนด์บาย</li>
               <li>สลับไปยังรายการเตือนภัย</li>
-              <li>แสดงข้อความ, สัญลักษณ์เตือน, และเพิ่มระดับเสียงโดยอัตโนมัติ</li>
+              <li>แสดงข้อความ สัญลักษณ์เตือน และเพิ่มระดับเสียงโดยอัตโนมัติ</li>
             </ul>
           </li>
         </ul>
       </div>
 
+      <div class="image-box">
+        <img src="../../images/รูปภาพ24.png" alt="รูปภาพ 24">
+        <p>รูปภาพ 24 การทำงาน EWF</p>
+      </div>
+
       <div class="subsection">
-        <h3 class="subsection-title">4.4 การนำไปใช้งาน</h3>
+        <h3 class="subsection-title">การนำไปใช้งาน</h3>
         <ul>
           <li>ใช้งานได้ในระดับท้องถิ่น ภูมิภาค หรือประเทศ</li>
           <li>ออกอากาศจากสถานีที่อยู่นอกพื้นที่ภัยพิบัติ</li>
@@ -296,7 +380,6 @@
       </div>
     </div>
 
-    <img src="../../images/รูปภาพ4.png" alt="รูปภาพ 4" style="max-width: 100%; height: auto; margin: 30px 0; border-radius: 10px;">
   </main>
 
   <!-- Footer -->
