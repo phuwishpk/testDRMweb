@@ -78,6 +78,7 @@ body {
 .dropdown {
   position: relative;
   display: inline-block;
+  float: none;
 }
 
 .dropdown > a {
@@ -95,11 +96,15 @@ body {
   z-index: 9999;
   top: 100%;
   left: 0;
+  right: auto;
   border-radius: 0 0 5px 5px;
-  visibility: hidden;
-  opacity: 0;
+  visibility: hidden !important;
+  opacity: 0 !important;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   list-style: none;
+  flex: none !important;
+  flex-wrap: nowrap !important;
+  flex-direction: column;
 }
 
 .dropdown-content a {
@@ -108,8 +113,10 @@ body {
   text-decoration: none;
   display: block !important;
   transition: background-color 0.3s ease;
-  margin: 0;
+  margin: 0 !important;
   white-space: nowrap;
+  float: none !important;
+  flex: none !important;
 }
 
 .dropdown-content a:hover {
@@ -122,8 +129,8 @@ body {
 
 .dropdown:hover .dropdown-content {
   display: block !important;
-  visibility: visible;
-  opacity: 1;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .dropdown > a::after {
