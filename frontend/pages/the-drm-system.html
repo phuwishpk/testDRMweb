@@ -10,6 +10,93 @@
   <meta name="referrer" content="no-referrer-when-downgrade">
   <title>The DRM System - Digital Radio Education</title>
   <link rel="stylesheet" href="../style-index.css" type="text/css">
+
+  <style>
+    .drm-article h2,
+    .drm-article h3,
+    .drm-article h4 {
+      margin-top: 28px;
+      margin-bottom: 14px;
+    }
+
+    .drm-article p,
+    .drm-article li {
+      line-height: 1.8;
+      text-align: justify;
+    }
+
+    .drm-article .lead {
+      margin-bottom: 24px;
+    }
+
+    .drm-article ul,
+    .drm-article ol {
+      margin-left: 22px;
+      margin-bottom: 18px;
+    }
+
+    .drm-article figure {
+      margin: 28px 0;
+      text-align: center;
+    }
+
+    .drm-article figure img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .drm-article figcaption {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: #555;
+      font-style: italic;
+    }
+
+    .content-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 30px;
+      background: #fff;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .content-table th,
+    .content-table td {
+      border: 1px solid #ddd;
+      padding: 12px 14px;
+      vertical-align: top;
+      text-align: left;
+      line-height: 1.7;
+    }
+
+    .content-table th {
+      background-color: #b30000;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .content-table tr:nth-child(even) td {
+      background-color: #fafafa;
+    }
+
+    .note-box {
+      background: #fff8f2;
+      border-left: 5px solid #b30000;
+      padding: 16px 18px;
+      margin: 20px 0 28px;
+      border-radius: 8px;
+    }
+
+    .section-divider {
+      margin: 34px 0 10px;
+      border: 0;
+      border-top: 1px solid #e3e3e3;
+    }
+  </style>
 </head>
 <body>
   <!-- Banner Section -->
@@ -45,60 +132,448 @@
 
   <!-- Main Content -->
   <main class="container">
-    <section class="home-content">
+    <section class="home-content drm-article">
       <h2>The DRM System</h2>
-      <p>โครงสร้างสัญญาณของ DRM ประกอบด้วยช่องสัญญาณสำคัญ 3 ส่วน ได้แก่ FAC สำหรับระบุสถานีและช่วยให้เครื่องรับสแกนหาบริการได้รวดเร็ว, SDC สำหรับส่งข้อมูลกำกับและเมทาดาทา เช่น ภาษา ประเภทเนื้อหา และความถี่ทางเลือก, และ MDC สำหรับส่งข้อมูลเสียงและบริการข้อมูลหลัก ระบบยังสามารถรองรับหลายสตรีมภายในช่องสัญญาณเดียว ช่วยให้สามารถให้บริการทั้งเสียงและข้อมูลดิจิทัลร่วมกันได้อย่างมีประสิทธิภาพ</p>
 
-      <h3>ส่วนประกอบหลักของระบบ DRM</h3>
+      <p class="lead"><strong>ระบบ DRM</strong></p>
+      <p>
+        บทนี้ให้คำอธิบายเกี่ยวกับคุณลักษณะที่สำคัญบางประการและบริการที่รองรับของระบบ DRM
+        รวมถึงภาพรวมขององค์ประกอบหลักในห่วงโซ่การกระจายเสียง (Broadcast Chain)
+      </p>
+
+      <h3>คุณลักษณะหลัก</h3>
+
+      <h4>การแพร่สัญญาณต่ำกว่า 30 MHz</h4>
       <ul>
-        <li><strong>FAC (Fast Access Channel)</strong> - ช่องเข้าถึงแบบรวดเร็ว ใช้สำหรับระบุตัวตนของสถานีและให้เครื่องรับสามารถสแกนหาบริการได้อย่างรวดเร็ว</li>
-        <li><strong>SDC (Service Description Channel)</strong> - ช่องอธิบายบริการ ใช้ส่งข้อมูลกำกับและเมทาดาทา เช่น ชื่อสถานี ภาษา ประเภทเนื้อหา และความถี่ทางเลือก</li>
-        <li><strong>MDC (Main Service Channel)</strong> - ช่องบริการหลัก ใช้ส่งข้อมูลเสียงและบริการข้อมูลหลัก</li>
+        <li>DRM ใช้ย่านความถี่ AM ที่มีอยู่เดิม (LF, MF, HF)</li>
+        <li>รองรับแผนความถี่เดิมที่ใช้ความกว้างช่อง 9 kHz หรือ 10 kHz</li>
+        <li>รองรับช่องครึ่งหนึ่ง (4.5 หรือ 5 kHz) และช่องคู่ (18 หรือ 20 kHz)</li>
+        <li>มีโหมดความทนทาน (Robustness Modes A ถึง D) ให้เลือกใช้ตามสภาพการแพร่สัญญาณที่แตกต่างกัน</li>
       </ul>
 
-      <h3>ความสามารถของระบบ</h3>
-      <p>ระบบ DRM มีความสามารถพิเศษดังต่อไปนี้:</p>
+      <h4>การแพร่สัญญาณสูงกว่า 30 MHz</h4>
       <ul>
-        <li>รองรับหลายสตรีมภายในช่องสัญญาณเดียว</li>
-        <li>ให้บริการทั้งเสียงและข้อมูลดิจิทัลร่วมกันได้อย่างมีประสิทธิภาพ</li>
-        <li>มีความทนทานต่อสัญญาณรบกวนและการเฟดดิ้งสูง</li>
-        <li>รองรับการส่งข้อมูลเพิ่มเติมหลากหลายประเภท</li>
+        <li>ใช้โหมดความทนทาน Mode E</li>
+        <li>ความกว้างแบนด์วิธคงที่ที่ 96 kHz (ครึ่งหนึ่งของ FM ปกติ)</li>
+        <li>รองรับแบนด์แพลนของ FM ที่มีช่วงห่างความถี่ 100 kHz</li>
+        <li>ใช้สเปกตรัมอย่างมีประสิทธิภาพแม้ในย่านความถี่ที่แน่นหนา</li>
+        <li>รองรับอัตราข้อมูลตั้งแต่ 37 kbps ถึง 186 kbps</li>
+        <li>สามารถให้บริการเสียงได้สูงสุด 3 ช่องต่อหนึ่งการแพร่สัญญาณ</li>
       </ul>
-    </section>
 
-    <section class="home-content" style="margin-top: 40px;">
-      <h2>Related Topics</h2>
-      <div class="cards-container">
-        <a href="what-is-drm.html" style="text-decoration: none;">
-        <div class="card" style="cursor: pointer;">
-          <h3>What is DRM</h3>
-          <p>ระบบ DRM เป็นระบบกระจายเสียงดิจิทัลแบบครบวงจร ได้รับการออกแบบให้เหมาะสำหรับย่านความถี่ HF, MF และ LF เพื่อใช้เป็นระบบดิจิทัลทดแทนการกระจายเสียงแบบ AM เดิม</p>
-        </div>
-        </a>
+      <p>
+        ระบบ DRM ใช้เทคนิคการส่งข้อมูลแบบ COFDM (Coded Orthogonal Frequency Division Multiplexing)
+        ซึ่งแบ่งข้อมูลออกเป็นพาหะความถี่ย่อยจำนวนมาก ช่วยลดผลกระทบจากการเฟด (fading)
+        และสามารถปรับพารามิเตอร์ต่าง ๆ เพื่อให้เหมาะกับสภาพแวดล้อมของคลื่นวิทยุ
+      </p>
 
-        <a href="the-drm-system.html" style="text-decoration: none;">
-        <div class="card" style="cursor: pointer;">
-          <h3>The DRM System</h3>
-          <p>โครงสร้างสัญญาณของ DRM ประกอบด้วยช่องสัญญาณสำคัญ 3 ส่วน ได้แก่ FAC, SDC และ MDC ซึ่งรองรับหลายสตรีมภายในช่องสัญญาณเดียว</p>
-        </div>
-        </a>
+      <p>
+        ใช้ระบบเข้ารหัสเสียง MPEG xHE-AAC
+        (และรองรับ HE-AACv2 เพื่อความเข้ากันได้กับระบบเดิม)
+        เพื่อให้คุณภาพเสียงสูงในอัตราข้อมูลต่ำ
+      </p>
 
-        <a href="drm-content.html" style="text-decoration: none;">
-        <div class="card" style="cursor: pointer;">
-          <h3>DRM Content</h3>
-          <p>องค์ประกอบของเนื้อหาในการออกอากาศ DRM ซึ่งสามารถแบ่งได้เป็น 4 หมวดหลัก</p>
-          <p style="font-size: 0.9em; margin-top: 10px; color: white;"><em><strong>คลิกเพื่อดูรายละเอียดเพิ่มเติม →</strong></em></p>
-        </div>
-        </a>
+      <h4>คุณสมบัติเพิ่มเติม</h4>
+      <ul>
+        <li>รองรับทุกย่านความถี่ที่ใช้ในการออกอากาศ (LF/MF/HF และ VHF Bands I, II, III)</li>
+        <li>ใช้งานร่วมกับระบบแอนะล็อกได้</li>
+        <li>รองรับทั้งเครือข่ายความถี่เดี่ยว (SFN) และหลายความถี่ (MFN)</li>
+        <li>บริการเสียงได้สูงสุด 3 ช่อง พร้อมบริการข้อมูลมัลติมีเดีย เช่น
+          <ul>
+            <li>ข้อความ (Text Messaging)</li>
+            <li>Journaline (บริการข้อมูลแบบโต้ตอบ)</li>
+            <li>SlideShow (แสดงภาพ)</li>
+            <li>SPI (ข้อมูลสถานีและรายการ)</li>
+          </ul>
+        </li>
+        <li>มาตรฐานระบบ DRM ทั้งหมดเป็นมาตรฐานเปิด</li>
+      </ul>
 
-        <a href="radio-receiver.html" style="text-decoration: none;">
-        <div class="card" style="cursor: pointer;">
-          <h3>DRM Receivers</h3>
-          <p>ข้อกำหนดทั่วไปของเครื่องรับ DRM เทคโนโลยีที่เกี่ยวของ และประสบการณ์จากการพัฒนา</p>
-          <p style="font-size: 0.9em; margin-top: 10px; color: white;"><em><strong>คลิกเพื่อดูรายละเอียดเพิ่มเติม →</strong></em></p>
-        </div>
-        </a>
+      <hr class="section-divider">
+
+      <h3>ห่วงโซ่การกระจายเสียง (Broadcast Chain)</h3>
+      <p>
+        แผนภาพในคู่มือแสดงกระบวนการไหลของข้อมูลจากแหล่งต้นทาง
+        (สตูดิโอหรือศูนย์ควบคุม) ไปยังผู้รับฟัง (DRM Receiver)
+      </p>
+
+      <p><strong>องค์ประกอบหลัก 2 ส่วน</strong></p>
+      <ol>
+        <li>Content Server (เซิร์ฟเวอร์เนื้อหา)</li>
+        <li>Modulator (เครื่องมอดูเลต)</li>
+      </ol>
+
+      <p>
+        ทั้งสองเชื่อมต่อผ่าน Multiplex Distribution Interface (MDI)
+        ซึ่งใช้โปรโตคอล DCP (Distribution and Communications Protocol)
+      </p>
+
+      <figure>
+        <img src="../../images/รูปภาพ7.png" alt="ห่วงโซ่การกระจายเสียงของระบบ DRM">
+        <figcaption>ห่วงโซ่การกระจายเสียงของระบบ DRM</figcaption>
+      </figure>
+
+      <h4>การเข้ารหัสและมัลติเพล็กซ์เนื้อหา DRM</h4>
+      <p><strong>ข้อมูลที่ส่งมี 2 ประเภท</strong></p>
+      <ol>
+        <li>MSC (Main Service Channel): เสียง + ข้อมูลหลัก</li>
+        <li>FAC และ SDC: ข้อมูลสำหรับระบุตัวบริการและการถอดรหัส</li>
+      </ol>
+
+      <ul>
+        <li><strong>FAC (Fast Access Channel):</strong> ใช้ตรวจสอบและเข้าถึงบริการอย่างรวดเร็ว</li>
+        <li><strong>SDC (Service Description Channel):</strong> ให้รายละเอียดเกี่ยวกับการเข้ารหัส เวลา ความถี่สำรอง (AFS) ฯลฯ</li>
+      </ul>
+
+      <p>
+        การเข้ารหัสและมัลติเพล็กซ์ทำโดย Content Server ซึ่งจะรวมข้อมูลเป็นรูปแบบที่กำหนดไว้
+        แล้วส่งต่อให้ Modulator ผ่าน MDI
+      </p>
+
+      <h4>การกระจายสัญญาณ DRM</h4>
+      <ul>
+        <li>ใช้ MDI + DCP เพื่อรวมเสียง ข้อมูล และพารามิเตอร์การแพร่สัญญาณเข้าด้วยกันเป็นฟีดเดียว</li>
+        <li>โดยทั่วไปควรตั้ง Content Server ไว้ที่สตูดิโอ เพื่อคุณภาพเสียงที่ดีที่สุด</li>
+        <li>ในกรณีที่จำเป็นสามารถกระจายเสียงแบบแยกส่วนโดยใช้ระบบส่งสัญญาณเดิมได้</li>
+      </ul>
+
+      <h4>การเข้ารหัสและมอดูเลชัน DRM</h4>
+      <ul>
+        <li><strong>Energy Dispersal:</strong> สุ่มลำดับบิตเพื่อลดรูปแบบซ้ำ</li>
+        <li><strong>Channel Encoder:</strong> เพิ่มบิตเพื่อแก้ไขข้อผิดพลาด และแมปข้อมูลเข้าสู่ QAM</li>
+        <li><strong>Cell Interleaving:</strong> สลับลำดับข้อมูล เพื่อลดผลกระทบจาก fading</li>
+        <li><strong>Pilot Generator:</strong> สร้างพาหะที่ไม่ใช่ข้อมูล เพื่อให้ผู้รับสามารถเทียบเฟส</li>
+        <li><strong>OFDM Cell Mapper:</strong> กระจายข้อมูลลงในพาหะย่อยแบบ time-frequency grid</li>
+      </ul>
+
+      <p><strong>ผลลัพธ์ของการมอดูเลตอาจอยู่ในรูปแบบ</strong></p>
+      <ul>
+        <li>คลื่น RF ที่ผ่านการมอดูเลตแล้ว</li>
+        <li>สัญญาณฐานแถบ I/Q (In-phase และ Quadrature)</li>
+        <li>สัญญาณ A-RFP (Amplitude-Reference Frame Polar)</li>
+      </ul>
+
+      <figure>
+        <img src="../../images/รูปภาพ8.png" alt="กระบวนการเข้ารหัสและมอดูเลชัน DRM">
+        <figcaption>กระบวนการเข้ารหัสและมอดูเลชัน DRM</figcaption>
+      </figure>
+
+      <h4>การจัดโครงสร้างสัญญาณแพร่ภาพ</h4>
+      <p><strong>การจัดเฟรมข้อมูล</strong></p>
+      <ul>
+        <li>ข้อมูล FAC ไม่ถูกรบกวนจาก interleaving เพื่อให้ผู้รับค้นหาบริการได้เร็ว</li>
+        <li>ข้อมูล SDC กระจายไปยังพาหะทั้งหมดในช่วงต้นของ “Superframe”</li>
+        <li>ช่วยให้ผู้รับสลับคลื่นอัตโนมัติ (AFS) ได้อย่างแม่นยำ</li>
+      </ul>
+
+      <p><strong>FAC Block</strong></p>
+      <ul>
+        <li>มีความยาวเฟรม 100 หรือ 400 ms</li>
+        <li>มีข้อมูลเกี่ยวกับพารามิเตอร์ช่องและบริการ</li>
+        <li>มีการตรวจสอบความถูกต้อง (CRC)</li>
+      </ul>
+
+      <p><strong>SDC</strong></p>
+      <ul>
+        <li>อธิบายวิธีถอดรหัส MSC</li>
+        <li>สื่อสารความถี่สำรอง เวลา ภาษารายการ และการเปลี่ยนแปลงค่าต่าง ๆ</li>
+      </ul>
+
+      <figure>
+        <img src="../../images/รูปภาพ9.png" alt="โครงสร้างสัญญาณแพร่ภาพของระบบ DRM">
+        <figcaption>โครงสร้างสัญญาณแพร่ภาพของระบบ DRM</figcaption>
+      </figure>
+
+      <hr class="section-divider">
+
+      <h3>การตั้งค่าระบบ DRM (Configuring the DRM System)</h3>
+      <p>
+        ส่วนนี้อธิบายถึงวิธีที่องค์ประกอบต่าง ๆ ของระบบ DRM ทำงานร่วมกัน
+        เพื่อให้สามารถออกแบบระบบได้ตามความต้องการเฉพาะของผู้แพร่ภาพ เช่น
+      </p>
+      <ul>
+        <li>จำนวนช่องบริการเสียง</li>
+        <li>การให้บริการข้อมูล</li>
+        <li>ระดับความทนทานของบริการ (robustness)</li>
+      </ul>
+
+      <h4>พารามิเตอร์การมอดูเลตและเข้ารหัส (Modulation &amp; Coding Parameters)</h4>
+      <p><strong>โหมดความทนทาน (Robustness Modes)</strong></p>
+      <p>
+        เพื่อให้ระบบทำงานได้ดีที่สุด พารามิเตอร์ของ OFDM เช่น
+        การเว้นระยะพาหะ (carrier spacing), ช่องว่างกันชน (guard interval)
+        และความหนาแน่นของพาหะนำร่อง (pilot density)
+        จะต้องปรับให้เหมาะสมกับลักษณะของช่องสัญญาณวิทยุ (RF channel)
+      </p>
+
+      <figure>
+        <img src="../../images/รูปภาพ10.png" alt="พารามิเตอร์การมอดูเลตและโหมดความทนทานของ DRM">
+        <figcaption>พารามิเตอร์การมอดูเลตและโหมดความทนทานของ DRM</figcaption>
+      </figure>
+
+      <p>ระบบ DRM รองรับโหมดการส่งทั้งหมด 5 แบบ ได้แก่ Mode A ถึง E</p>
+
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>โหมด</th>
+            <th>ความถี่</th>
+            <th>การใช้งานทั่วไป</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A</td>
+            <td>ต่ำกว่า 30 MHz</td>
+            <td>คลื่นพื้นดิน (ground-wave) เช่น LF, MF หรือการมองเห็นตรง (line-of-sight) ในย่าน 26 MHz</td>
+          </tr>
+          <tr>
+            <td>B</td>
+            <td>ต่ำกว่า 30 MHz</td>
+            <td>การส่งแบบ sky-wave ใน HF และ MF</td>
+          </tr>
+          <tr>
+            <td>C</td>
+            <td>ต่ำกว่า 30 MHz</td>
+            <td>ช่อง sky-wave ที่มีความซับซ้อน เช่น หลายจุดสะท้อน</td>
+          </tr>
+          <tr>
+            <td>D</td>
+            <td>ต่ำกว่า 30 MHz</td>
+            <td>NVIS (Near Vertical Incidence Sky-wave) ที่มีการแพร่คลื่นแบบตั้งฉาก</td>
+          </tr>
+          <tr>
+            <td>E</td>
+            <td>สูงกว่า 30 MHz</td>
+            <td>สำหรับ VHF เช่น FM หรือบริการท้องถิ่น</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>ค่าการมอดูเลต (QAM Constellation) และอัตราการเข้ารหัส (Code Rates)</strong></p>
+      <p>นอกเหนือจากโหมดการส่ง ผู้แพร่ภาพสามารถเลือกพารามิเตอร์ได้อีก เช่น</p>
+      <ul>
+        <li>QAM แบบ 4, 16 หรือ 64 จุด</li>
+        <li>อัตราการเข้ารหัสแบบ Viterbi</li>
+      </ul>
+
+      <p>การเลือกพารามิเตอร์เหล่านี้จะขึ้นอยู่กับ</p>
+      <ul>
+        <li>อัตราส่วนสัญญาณต่อสัญญาณรบกวน (SNR) ที่คาดว่าจะได้รับในพื้นที่บริการ</li>
+        <li>ความต้องการความทนทานของสัญญาณหรือความจุข้อมูล</li>
+      </ul>
+
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>ความถี่</th>
+            <th>ตัวเลือก QAM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>&lt; 30 MHz (Modes A–D)</td>
+            <td>16-QAM หรือ 64-QAM</td>
+          </tr>
+          <tr>
+            <td>&gt; 30 MHz (Mode E)</td>
+            <td>4-QAM หรือ 16-QAM</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>การมัลติเพล็กซ์บริการและความจุข้อมูล (Service Multiplexing and Payload Capacity)</h4>
+      <p>
+        ภายใต้ข้อจำกัดของพารามิเตอร์การส่ง เช่น QAM และ bandwidth
+        ผู้แพร่ภาพสามารถจัดสรรความจุของช่องบริการหลัก (MSC) ได้อย่างยืดหยุ่น เช่น
+      </p>
+      <ul>
+        <li>ให้บริการเสียงความคมชัดสูง 1 ช่อง พร้อมบริการเสียงข้อมูลความละเอียดต่ำ เช่น ข่าวหรือจราจร</li>
+        <li>หรือให้บริการเสียง พร้อมข้อความ และข้อมูลเสริม</li>
+      </ul>
+
+      <p><strong>ประเภทบริการในระบบ DRM</strong></p>
+      <ul>
+        <li>
+          <strong>บริการเสียง (Audio Service)</strong>
+          <ul>
+            <li>มี 1 องค์ประกอบเสียง</li>
+            <li>รองรับข้อมูลเสริม (PAD) ได้ถึง 4 รายการ</li>
+          </ul>
+        </li>
+        <li>
+          <strong>บริการข้อมูล (Data Service)</strong>
+          <ul>
+            <li>มี 1 องค์ประกอบข้อมูล</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p>
+        ระบบ DRM หนึ่งช่องสัญญาณสามารถให้บริการได้ 1–4 บริการ
+        และภายในนั้นสามารถมีได้สูงสุด 3 บริการเสียง
+      </p>
+      <p>
+        ผู้ใช้เลือกบริการจาก “ชื่อสถานี” (Service Label) ซึ่งฝังอยู่ใน SDC
+        ระบบจะจับคู่กับข้อมูลใน MSC โดยอัตโนมัติ
+      </p>
+      <p>
+        ระบบยังรองรับการเชื่อมโยงข้อมูลเสียงและข้อมูลเสริมที่แชร์ร่วมกันหลายบริการ
+        เพื่อลดการส่งข้อมูลซ้ำ
+      </p>
+
+      <figure>
+        <img src="../../images/รูปภาพ11.png" alt="การมัลติเพล็กซ์บริการและความจุข้อมูลของระบบ DRM">
+        <figcaption>การมัลติเพล็กซ์บริการและความจุข้อมูลของระบบ DRM</figcaption>
+      </figure>
+
+      <p><strong>ตัวอย่างค่าความเร็วข้อมูลของระบบ DRM (DRM System Bit Rates)</strong></p>
+      <p>
+        ตารางต่อไปนี้แสดงอัตราข้อมูล (bitrate) ที่เป็นไปได้สำหรับแต่ละโหมดและการมอดูเลต
+      </p>
+
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>โหมด</th>
+            <th>QAM</th>
+            <th>ความกว้างแบนด์วิธ (kHz)</th>
+            <th>ช่วง Bitrate (kbps) โดยประมาณ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A</td>
+            <td>64</td>
+            <td>10</td>
+            <td>22.1 – 34.8</td>
+          </tr>
+          <tr>
+            <td>B</td>
+            <td>16</td>
+            <td>10</td>
+            <td>14.8 – 27.4</td>
+          </tr>
+          <tr>
+            <td>C</td>
+            <td>64</td>
+            <td>20</td>
+            <td>สูงสุด ~72</td>
+          </tr>
+          <tr>
+            <td>E</td>
+            <td>16</td>
+            <td>100</td>
+            <td>99.4 – 186.3</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note-box">
+        <strong>หมายเหตุ:</strong> Mode E รองรับอัตราข้อมูลสูงสุด และใช้ในระบบ VHF/FMN
       </div>
+
+      <figure>
+        <img src="../../images/รูปภาพ12.png" alt="ตัวอย่างอัตราข้อมูลของระบบ DRM">
+        <figcaption>ตัวอย่างอัตราข้อมูลของระบบ DRM</figcaption>
+      </figure>
+
+      <h4>เครือข่ายความถี่เดียวและหลายความถี่ (SFN &amp; MFN)</h4>
+      <ul>
+        <li>
+          <strong>SFN (Single Frequency Network)</strong>
+          <ul>
+            <li>สถานีส่งหลายแห่งใช้ความถี่เดียวกัน</li>
+            <li>ช่วยประหยัดสเปกตรัม และสัญญาณเสริมแรงกันในพื้นที่ทับซ้อน</li>
+            <li>เหมาะกับบริการครอบคลุมระดับประเทศ</li>
+          </ul>
+        </li>
+        <li>
+          <strong>MFN (Multi-Frequency Network)</strong>
+          <ul>
+            <li>สถานีส่งแต่ละแห่งใช้ความถี่ต่างกัน</li>
+            <li>เครื่องรับสามารถสแกนความถี่สำรองแบบอัตโนมัติ (AFS)</li>
+            <li>เหมาะกับพื้นที่ที่ไม่สามารถจัด SFN ได้</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p>
+        ระบบ DRM มีช่องว่างเวลาสั้น ๆ (gap) ที่ไม่มีข้อมูลใน MSC
+        เพื่อให้เครื่องรับมีเวลาสลับคลื่นโดยไม่กระทบเสียงที่กำลังฟังอยู่
+      </p>
+
+      <figure>
+        <img src="../../images/รูปภาพ13.png" alt="เครือข่าย SFN และ MFN ของระบบ DRM">
+        <figcaption>เครือข่ายความถี่เดียวและหลายความถี่ของระบบ DRM</figcaption>
+      </figure>
+
+      <h4>โหมดซิมัลแคสต์ (Simulcast)</h4>
+      <ul>
+        <li>ใช้ในกรณีที่ผู้แพร่ภาพต้องการให้บริการแบบดิจิทัลควบคู่กับแอนะล็อก</li>
+        <li>โดยไม่ต้องลงทุนในคลื่นใหม่หรือเครื่องส่งใหม่ทันที</li>
+        <li>เหมาะกับผู้ที่มีเพียงความถี่เดียว เช่น คลื่น MF</li>
+      </ul>
+
+      <p><strong>ตัวอย่าง</strong></p>
+      <ul>
+        <li>ออกอากาศแอนะล็อกในช่วงกลางวัน</li>
+        <li>ออกอากาศ DRM เต็มรูปแบบในช่วงกลางคืน</li>
+        <li>หรือใช้ความถี่ข้างเคียงในรูปแบบ Multi-Channel Simulcast</li>
+      </ul>
+
+      <figure>
+        <img src="../../images/รูปภาพ14.png" alt="ตัวอย่างโหมดซิมัลแคสต์ของ DRM">
+        <figcaption>ตัวอย่างโหมดซิมัลแคสต์ของ DRM</figcaption>
+      </figure>
+
+      <h4>การส่งสัญญาณความถี่สำรอง (AFS – Alternative Frequency Signalling)</h4>
+      <p>ระบบ DRM มีความสามารถในการส่งรายชื่อความถี่อื่น ๆ ที่ให้บริการเดียวกัน เช่น</p>
+      <ul>
+        <li>สลับระหว่าง DRM ↔ DRM ได้แบบไร้รอยต่อ (Seamless AFS)</li>
+        <li>หรือสลับไปยังระบบอื่น เช่น FM / AM / DAB ได้แบบทั่วไป (Generic AFS)</li>
+      </ul>
+
+      <p><strong>ประโยชน์</strong></p>
+      <ul>
+        <li>ใช้ในกรณีเดินทางระหว่างเมืองหรือประเทศ</li>
+        <li>ใช้ในบริการ HF ที่ต้องเปลี่ยนความถี่ตามช่วงเวลาของวัน</li>
+      </ul>
+
+      <figure>
+        <img src="../../images/รูปภาพ15.png" alt="การส่งสัญญาณความถี่สำรอง AFS ในระบบ DRM">
+        <figcaption>การส่งสัญญาณความถี่สำรอง AFS ในระบบ DRM</figcaption>
+      </figure>
+
+      <h4>การเตรียมเนื้อหาเสียง</h4>
+      <p>
+        เมื่อให้บริการ DRM ด้วย bitrate ต่ำกว่า 30 kbps
+        ต้องหลีกเลี่ยงการบีบอัดเสียงหลายครั้ง (tandem coding)
+        เพราะจะลดคุณภาพของสัญญาณเสียง
+      </p>
+
+      <p><strong>แนวทางที่ดี</strong></p>
+      <ul>
+        <li>ควรเข้ารหัส DRM ที่จุดต้นทาง เช่น สตูดิโอ</li>
+        <li>ส่งผ่าน MDI โดยตรงไปยังเครื่องส่ง</li>
+        <li>หลีกเลี่ยงการเข้ารหัสซ้ำหลายขั้นตอน เช่น จากดาวเทียม → ระบบตัดต่อ → เครื่องส่ง</li>
+      </ul>
+
+      <hr class="section-divider">
+
+      <h3>ระบบสัญญาณแอนะล็อก AMSS (AM Signalling System)</h3>
+      <ul>
+        <li>ระบบนี้อนุญาตให้สถานี AM แบบดั้งเดิมสามารถส่งข้อมูลสัญญาณดิจิทัลได้</li>
+        <li>เครื่องรับสามารถค้นหาสถานี AM เหล่านี้ได้เหมือนเป็นบริการดิจิทัล</li>
+        <li>ใช้ได้กับการสลับไปยังคลื่น DRM, FM หรือ DAB ได้โดยอัตโนมัติ</li>
+        <li>ความเร็วข้อมูลประมาณ 47 bps</li>
+        <li>เผยแพร่เป็นมาตรฐาน ETSI TS 102 386</li>
+      </ul>
+
+      <figure>
+        <img src="../../images/รูปภาพ16.png" alt="ระบบสัญญาณแอนะล็อก AMSS">
+        <figcaption>ระบบสัญญาณแอนะล็อก AMSS</figcaption>
+      </figure>
     </section>
   </main>
 
