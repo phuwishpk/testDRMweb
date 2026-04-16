@@ -1,0 +1,104 @@
+/* Login Page Specific Styles */
+html, body {
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.page-content {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-content h2 {
+  color: #667eea;
+  font-size: 2.2em;
+  margin-bottom: 10px;
+}
+
+.hint {
+  color: #666;
+  margin-bottom: 18px;
+}
+
+.status {
+  min-height: 24px;
+  margin: 10px 0 16px;
+  color: #333;
+}
+
+.login-form {
+  max-width: 520px;
+  display: grid;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field span {
+  font-weight: 600;
+  color: #444;
+}
+
+.field input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.actions button {
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.actions button#loginBtn {
+  background: #667eea;
+  color: #fff;
+}
+
+.actions button#loginBtn:hover {
+  background: #5568d8;
+}
+
+.actions button.secondary {
+  background: #333;
+  color: #fff;
+}
+
+.actions button.secondary:hover {
+  background: #222;
+}
+
+.small {
+  margin-top: 18px;
+  color: #777;
+  font-size: 0.95em;
+}
+
+.footer {
+  margin-top: auto;
+}

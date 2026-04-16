@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <title>Post - Digital Radio Education</title>
+  <link rel="stylesheet" href="../style-index.css" type="text/css">
+  <link rel="stylesheet" href="style-post.css">
+</head>
+<body>
+  <!-- Banner Section -->
+  <header class="banner">
+    <div class="banner-content">
+      <h1>Digital Radio Education (DRE)</h1>
+      <p class="subtitle">วิทยุดิจิทัลเพื่อการศึกษา</p>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <ul class="nav-menu">
+      <li><a href="../../index.html">Home</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" onclick="return false;">About DRM</a>
+        <div class="dropdown-content">
+          <a href="what-is-drm.html">What is DRM</a>
+          <a href="the-drm-system.html">The DRM System</a>
+          <a href="drm-content.html">DRM Content</a>
+          <a href="radio-receiver.html">DRM Receivers</a>
+        </div>
+      </li>
+      <li><a href="thai-forum.html">Thai Forum</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="event.html">Event</a></li>
+      <li><a href="product.html">Product</a></li>
+      <li><a href="drm-world.html">DRM in World</a></li>
+      <li><a href="drm-elearning.html">DRM E-learning</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container">
+    <section class="page-content">
+      <a id="backLink" class="back" href="thai-forum.html">← กลับ</a>
+
+      <h2 id="postTitle">กำลังโหลด...</h2>
+      <div id="postMeta" class="meta"></div>
+
+      <div id="postContent" class="content"></div>
+
+      <hr class="sep" />
+
+      <h3>Comments</h3>
+      <div id="commentsList" class="comments"></div>
+
+      <form id="commentForm" class="comment-form">
+        <div class="row">
+          <label class="field">
+            <span>ชื่อ (ไม่บังคับ)</span>
+            <input id="commentName" type="text" maxlength="80" placeholder="Guest" />
+          </label>
+          <label class="field">
+            <span>ข้อความ</span>
+            <textarea id="commentMessage" rows="3" required maxlength="2000" placeholder="พิมพ์คอมเมนต์..."></textarea>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit">ส่งคอมเมนต์</button>
+          <span id="commentStatus" class="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Digital Radio Education (DRE). All rights reserved.</p>
+  </footer>
+
+  <script src="script-post.js"></script>
+</body>
+</html>

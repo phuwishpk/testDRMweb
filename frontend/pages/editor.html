@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <title>Editor - Digital Radio Education</title>
+  <link rel="stylesheet" href="../style-index.css" type="text/css">
+  <link rel="stylesheet" href="style-editor.css">
+</head>
+<body>
+  <!-- Banner Section -->
+  <header class="banner">
+    <div class="banner-content">
+      <h1>Digital Radio Education (DRE)</h1>
+      <p class="subtitle">วิทยุดิจิทัลเพื่อการศึกษา</p>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <ul class="nav-menu">
+      <li><a href="../../index.html">Home</a></li>
+      <li class="dropdown">
+        <a href="javascript:void(0)" onclick="return false;">About DRM</a>
+        <div class="dropdown-content">
+          <a href="what-is-drm.html">What is DRM</a>
+          <a href="the-drm-system.html">The DRM System</a>
+          <a href="drm-content.html">DRM Content</a>
+          <a href="radio-receiver.html">DRM Receivers</a>
+        </div>
+      </li>
+      <li><a href="thai-forum.html">Thai Forum</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="event.html">Event</a></li>
+      <li><a href="product.html">Product</a></li>
+      <li><a href="drm-world.html">DRM in World</a></li>
+      <li><a href="drm-elearning.html">DRM E-learning</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container">
+    <section class="page-content">
+      <h2>เพิ่มเนื้อหา (Admin)</h2>
+      <p class="hint">สร้างหน้าเนื้อหาใหม่: ข้อความ / ลิงก์ / รูปภาพ (กำหนดตำแหน่งและขนาดได้)</p>
+
+      <div id="notAdmin" class="not-admin" style="display:none;">
+        <p>หน้านี้สำหรับ Admin เท่านั้น</p>
+        <a class="btn" href="login.html?redirect=editor.html">ไปหน้า Login</a>
+      </div>
+
+      <form id="postForm" class="editor" style="display:none;">
+        <div class="grid">
+          <label class="field">
+            <span>หมวด</span>
+            <select id="category" required>
+              <option value="thai_forum">Thai Forum</option>
+              <option value="news">News</option>
+              <option value="event">Event</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>หัวข้อ</span>
+            <input id="title" type="text" required maxlength="255" />
+          </label>
+
+          <label class="field full">
+            <span>สรุป (ไม่บังคับ)</span>
+            <textarea id="summary" rows="2" maxlength="1000" placeholder="ข้อความสั้นๆ สำหรับแสดงในรายการ"></textarea>
+          </label>
+        </div>
+
+        <div class="section-header">
+          <h3>Content blocks</h3>
+          <div class="block-actions">
+            <button type="button" id="addText">เพิ่มข้อความ</button>
+            <button type="button" id="addLink">เพิ่มลิงก์</button>
+            <button type="button" id="addImage">เพิ่มรูป</button>
+          </div>
+        </div>
+
+        <div id="blocks" class="blocks"></div>
+
+        <div class="section-header">
+          <h3>คลังรูปภาพ</h3>
+          <div class="media-actions">
+            <input id="mediaFile" type="file" accept="image/png,image/jpeg,image/webp" />
+            <button type="button" id="uploadMedia">อัปโหลด</button>
+            <span class="note">รองรับ jpg/png/webp (สูงสุด 5MB)</span>
+          </div>
+        </div>
+
+        <div id="mediaGallery" class="media-gallery"></div>
+
+        <div class="section-header">
+          <h3>Preview</h3>
+        </div>
+        <div id="preview" class="preview" aria-live="polite"></div>
+
+        <div class="form-actions">
+          <button id="saveBtn" type="submit">บันทึก</button>
+          <a class="btn secondary" id="cancelLink" href="thai-forum.html">ยกเลิก</a>
+          <span id="formMessage" class="form-message" aria-live="polite"></span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Digital Radio Education (DRE). All rights reserved.</p>
+  </footer>
+
+  <script src="script-editor.js"></script>
+</body>
+</html>

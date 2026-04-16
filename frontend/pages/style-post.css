@@ -1,0 +1,181 @@
+/* Post Page Specific Styles */
+html, body {
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.page-content {
+  background: white;
+  padding: 28px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.page-content h2 {
+  color: #333;
+  font-size: 2.2em;
+  margin-bottom: 6px;
+}
+
+.meta {
+  color: #777;
+  font-size: 0.95em;
+  margin-bottom: 14px;
+}
+
+.content p {
+  margin: 0 0 12px;
+  line-height: 1.8;
+  color: #444;
+  font-size: 1.05em;
+}
+
+.content a {
+  color: #667eea;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.content a:hover {
+  text-decoration: underline;
+}
+
+.img-wrap {
+  margin: 14px 0;
+}
+
+.img-wrap img {
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.img-caption {
+  margin-top: 6px;
+  color: #666;
+  font-size: 0.95em;
+}
+
+.sep {
+  margin: 20px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.comments {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.comment {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fafafa;
+}
+
+.comment .head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.comment .name {
+  font-weight: 800;
+  color: #333;
+}
+
+.comment .time {
+  color: #777;
+  font-size: 0.9em;
+}
+
+.comment .msg {
+  margin-top: 6px;
+  white-space: pre-wrap;
+  line-height: 1.7;
+  color: #444;
+}
+
+.comment-form {
+  display: grid;
+  gap: 10px;
+}
+
+.comment-form .row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field span {
+  font-weight: 700;
+  color: #444;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #667eea;
+  color: #fff;
+}
+
+.actions button:hover {
+  background: #5568d8;
+}
+
+.status {
+  color: #333;
+  font-weight: 600;
+}
+
+.footer {
+  margin-top: auto;
+}

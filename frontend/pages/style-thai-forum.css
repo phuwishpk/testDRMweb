@@ -149,6 +149,83 @@ main {
   display: none;
 }
 
+/* CMS list */
+.cms-sep {
+  margin: 26px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cms-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.add-content-btn {
+  display: inline-block;
+  background: #667eea;
+  color: #fff;
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-content-btn:hover {
+  background: #5568d8;
+}
+
+.posts-list {
+  display: grid;
+  gap: 12px;
+}
+
+.post-item {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafafa;
+}
+
+.post-title {
+  display: inline-block;
+  font-weight: 800;
+  color: #222;
+  text-decoration: none;
+}
+
+.post-title:hover {
+  text-decoration: underline;
+}
+
+.post-meta {
+  margin-top: 6px;
+  font-size: 0.9em;
+  color: #777;
+}
+
+.post-summary {
+  margin-top: 8px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.posts-loading,
+.posts-empty,
+.posts-error {
+  color: #666;
+}
+
+.posts-error {
+  color: #b00020;
+}
+
 @media (max-width: 768px) {
   .page-content {
     padding: 16px;
