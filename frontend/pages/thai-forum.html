@@ -48,9 +48,27 @@
   <main class="container">
     <section class="page-content">
       <h2>Thai Forum</h2>
-      <p>Join our Thai community forum to discuss Digital Radio Education and share your experiences with DRM technology.</p>
-      <h3>Community Discussion</h3>
-      <p>Connect with other radio enthusiasts and educators from Thailand. Share your knowledge, ask questions, and explore new ideas together.</p>
+      <p>ใช้งานเว็บตัวอย่างด้านล่างได้ทันที (Interactive) หรือเปิดแบบเต็มหน้าได้จากปุ่มด้านล่าง</p>
+
+      <div class="forum-fullscreen-area" id="forumFullscreenArea">
+        <div class="forum-actions">
+          <button class="fullscreen-toggle" id="fullscreenToggle" type="button">เต็มจอ</button>
+          <a class="open-external" href="https://thaidemodrm.am-drm-radio.net/" target="_blank" rel="noopener noreferrer">เปิดแบบเต็มหน้า</a>
+        </div>
+
+        <div class="forum-embed-wrapper">
+          <iframe
+            class="forum-embed"
+            src="https://thaidemodrm.am-drm-radio.net/"
+            title="Thai Demo DRM"
+            referrerpolicy="no-referrer-when-downgrade"
+            allow="fullscreen"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <p class="embed-note">หากกรอบด้านบนไม่แสดงผล อาจเกิดจากเว็บต้นทางไม่อนุญาตให้ฝัง (X-Frame-Options/CSP) ให้กด “เปิดแบบเต็มหน้า” แทน</p>
+      </div>
     </section>
   </main>
 
