@@ -9,7 +9,7 @@ const session = require('express-session');
 const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
