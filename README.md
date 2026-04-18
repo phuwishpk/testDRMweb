@@ -123,6 +123,41 @@ Server จะทำงานที่ `http://localhost:5000`
 - ตรวจสอบ Network tab เพื่อดู API calls
 - ตรวจสอบว่า API_URL ใน `script.js` ถูกต้อง
 
+## 🪟 Deploy บน Plesk/IIS (Windows)
+
+โครงสร้างที่แนะนำบนโฮสติ้ง:
+
+```
+home.am-drm-radio.net/
+├── index.html
+├── frontend/
+├── images/
+├── backend/
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+├── server.js          # entrypoint (อยู่ที่ root)
+└── package.json       # dependencies สำหรับ npm install ครั้งเดียว (อยู่ที่ root)
+```
+
+ตั้งค่าใน Plesk > Node.js:
+
+- **Document Root**: โฟลเดอร์ root ของเว็บ (ที่มี `index.html`, `frontend/`, `images/`)
+- **Application Root**: โฟลเดอร์เดียวกับ Document Root
+- **Application Startup File**: `server.js` (ที่ root)
+
+จากนั้นกด **NPM install** (ครั้งเดียว) แล้วกด **Restart App**
+
+ทดสอบ:
+
+- เปิด `https://<domain>/health` ควรได้ JSON สถานะ
+- เปิด `https://<domain>/frontend/style-index.css` ควรเป็นไฟล์ CSS (ไม่ใช่ HTML)
+
+หมายเหตุ:
+
+- ระบบอัปโหลดจะพยายามใช้โฟลเดอร์ `App_Data/uploads` (ถ้ามี) ซึ่งมักเขียนได้บน IIS
+- ถ้าเจอ iisnode 500.1002 ให้เช็คสิทธิ์เขียน (Write/Modify) ของ Application Pool กับโฟลเดอร์เว็บ/`App_Data`
+
 ## 🎯 ขั้นตอนต่อไป
 
 - [ ] ปรับปรุง UI/UX

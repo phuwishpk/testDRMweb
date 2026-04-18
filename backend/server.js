@@ -60,9 +60,39 @@ app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
 app.use('/images', express.static(path.join(__dirname, '../images')));
 
 // Uploads (public read)
-const uploadDir = path.join(__dirname, 'uploads');
-fs.mkdirSync(uploadDir, { recursive: true });
-app.use('/uploads', express.static(uploadDir));
+const siteRoot = path.resolve(__dirname, '..');
+const uploadDirCandidates = [];
+
+if (typeof process.env.UPLOAD_DIR === 'string' && process.env.UPLOAD_DIR.trim()) {
+  uploadDirCandidates.push(path.resolve(process.env.UPLOAD_DIR.trim()));
+}
+
+if (fs.existsSync(path.join(siteRoot, 'App_Data'))) {
+  uploadDirCandidates.push(path.join(siteRoot, 'App_Data', 'uploads'));
+}
+
+uploadDirCandidates.push(path.join(__dirname, 'uploads'));
+
+let uploadDir = null;
+for (const candidate of uploadDirCandidates) {
+  try {
+    fs.mkdirSync(candidate, { recursive: true });
+    uploadDir = candidate;
+    break;
+  } catch (err) {
+    console.error(
+      '⚠️ Cannot create upload dir:',
+      candidate,
+      err && err.message ? err.message : err
+    );
+  }
+}
+
+if (uploadDir) {
+  app.use('/uploads', express.static(uploadDir));
+} else {
+  console.error('⚠️ Uploads disabled (no writable upload directory found).');
+}
 
 // MySQL Pool
 const pool = mysql.createPool({
@@ -292,6 +322,10 @@ app.get('/api/admin/media', requireAdmin, async (req, res) => {
 });
 
 app.post('/api/admin/media', enforceSameOriginForAdmin, requireAdmin, (req, res) => {
+  if (!uploadDir) {
+    return res.status(503).json({ error: 'Uploads are temporarily unavailable' });
+  }
+
   imageUpload.single('image')(req, res, async (err) => {
     if (err) {
       if (err.message === 'INVALID_FILE_TYPE') {
@@ -574,6 +608,10 @@ app.delete('/api/items/:id', async (req, res) => {
 
 // Startup
 (async () => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+
   try {
     await pool.query('SELECT 1');
     console.log('Connected to MySQL database');
@@ -581,8 +619,4 @@ app.delete('/api/items/:id', async (req, res) => {
   } catch (err) {
     console.error('Database connection failed:', err && err.message ? err.message : err);
   }
-
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
 })();
