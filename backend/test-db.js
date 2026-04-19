@@ -17,7 +17,12 @@ function loadEnv() {
   return null;
 }
 
-loadEnv();
+const loadedEnvPath = loadEnv();
+if (loadedEnvPath) {
+  console.log('Loaded environment from:', loadedEnvPath);
+} else {
+  console.warn('⚠️ No .env file found (checked backend/.env and project-root .env).');
+}
 
 console.log('Attempting to connect with:');
 console.log('Host:', process.env.DB_HOST);
