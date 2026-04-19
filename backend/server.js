@@ -619,8 +619,21 @@ app.delete('/api/items/:id', async (req, res) => {
 
 // Startup
 (async () => {
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+  });
+
+  server.on('error', (err) => {
+    if (err && err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use.`);
+      console.error(
+        "Tip (Plesk/IIS): don't run `npm start` from the 'Run script' panel. Use the Node.js app 'Restart App' button instead."
+      );
+      process.exit(1);
+    }
+
+    console.error('❌ Server failed to start:', err && err.message ? err.message : err);
+    process.exit(1);
   });
 
   try {

@@ -20,11 +20,6 @@ function loadEnv() {
 const loadedEnvPath = loadEnv();
 if (loadedEnvPath) {
   console.log('Loaded environment from:', loadedEnvPath);
-} else {
-  console.warn('⚠️ No .env file found (checked backend/.env and project-root .env).');
-  console.warn('Checked paths:');
-  console.warn(' -', path.join(__dirname, '.env'));
-  console.warn(' -', path.join(__dirname, '..', '.env'));
 }
 
 console.log('Attempting to connect with:');
@@ -37,6 +32,12 @@ const required = ['DB_HOST', 'DB_USER', 'DB_NAME'];
 const missing = required.filter((k) => !process.env[k]);
 
 if (missing.length) {
+  if (!loadedEnvPath) {
+    console.warn('⚠️ No .env file found (checked backend/.env and project-root .env).');
+    console.warn('Checked paths:');
+    console.warn(' -', path.join(__dirname, '.env'));
+    console.warn(' -', path.join(__dirname, '..', '.env'));
+  }
   console.error('❌ Missing environment variables:', missing.join(', '));
   console.error('Fix: create backend/.env (or .env at project root), or set these in your hosting environment variables.');
   process.exit(2);
