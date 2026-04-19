@@ -9,10 +9,21 @@ const session = require('express-session');
 const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+const dotenv = require('dotenv');
+
+// Load env vars from backend/.env (preferred) or project-root .env (hosting-friendly)
+dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const missingDbVars = ['DB_HOST', 'DB_USER', 'DB_NAME'].filter((k) => !process.env[k]);
+if (missingDbVars.length) {
+  console.error(
+    `⚠️ Missing DB env vars: ${missingDbVars.join(', ')}. Create backend/.env (or .env at project root) or set hosting environment variables.`
+  );
+}
 
 const SESSION_SECRET =
   typeof process.env.SESSION_SECRET === 'string' && process.env.SESSION_SECRET.length >= 16
