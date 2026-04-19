@@ -153,6 +153,8 @@ home.am-drm-radio.net/
 - เปิด `https://<domain>/health` ควรได้ JSON สถานะ
 - เปิด `https://<domain>/frontend/style-index.css` ควรเป็นไฟล์ CSS (ไม่ใช่ HTML)
 
+ถ้าเปิด `/health` แล้วขึ้น 404 แบบหน้า Web Server (ยังไม่เข้า Node) ให้ตรวจว่า Node.js app ถูก Enable และ Startup file ชี้ไปที่ `server.js` (ที่ root) แล้ว หากใช้ IIS/iisnode ให้มีไฟล์ `web.config` อยู่ที่ root ด้วย (โปรเจกต์นี้มีให้แล้ว)
+
 หมายเหตุ:
 
 - ระบบอัปโหลดจะพยายามใช้โฟลเดอร์ `App_Data/uploads` (ถ้ามี) ซึ่งมักเขียนได้บน IIS
