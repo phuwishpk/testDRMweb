@@ -22,6 +22,9 @@ if (loadedEnvPath) {
   console.log('Loaded environment from:', loadedEnvPath);
 } else {
   console.warn('⚠️ No .env file found (checked backend/.env and project-root .env).');
+  console.warn('Checked paths:');
+  console.warn(' -', path.join(__dirname, '.env'));
+  console.warn(' -', path.join(__dirname, '..', '.env'));
 }
 
 console.log('Attempting to connect with:');
