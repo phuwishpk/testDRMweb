@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon backend/server.js"
+    "dev": "nodemon backend/server.js",
+    "test": "node backend/test-db.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
