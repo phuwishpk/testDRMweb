@@ -53,6 +53,12 @@ DB_NAME=simple_web_db
 PORT=5000
 ```
 
+ถ้าบนโฮสติ้งตั้ง Environment Variables ไม่ได้ ให้ใช้ไฟล์ตั้งค่าแบบโค้ดแทน:
+
+1. คัดลอก `backend/db.config.example.js` เป็น `backend/db.config.js`
+2. แก้ค่า `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` ในไฟล์นั้น
+3. รีสตาร์ตแอป
+
 ### 3. รัน Backend Server
 
 ```bash
@@ -113,6 +119,7 @@ Server จะทำงานที่ `http://localhost:5000`
 - ตรวจสอบว่า MySQL Server ทำงานอยู่
 - ตรวจสอบ credentials ในไฟล์ `.env`
 - ตรวจสอบว่า database `simple_web_db` ถูกสร้างแล้ว
+- ถ้าใช้โฮสติ้งที่ตั้ง env ยาก ให้สร้างไฟล์ `backend/db.config.js` จาก `backend/db.config.example.js`
 
 ### CORS Error
 - ตรวจสอบว่า Backend server ทำงานอยู่ที่ port 5000
@@ -147,6 +154,8 @@ home.am-drm-radio.net/
 - **Application Startup File**: `server.js` (ที่ root)
 
 จากนั้นกด **NPM install** (ครั้งเดียว) แล้วกด **Restart App**
+
+หมายเหตุ: หลีกเลี่ยงการกด Run script เป็น `npm start` เพราะจะชนพอร์ตได้ง่าย (`EADDRINUSE`)
 
 ทดสอบ:
 

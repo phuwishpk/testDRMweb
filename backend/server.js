@@ -12,34 +12,96 @@ const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 
 // Load env vars from backend/.env (preferred) or project-root .env (hosting-friendly)
-dotenv.config({ path: path.join(__dirname, '.env') });
-dotenv.config({ path: path.join(__dirname, '..', '.env') });
+const envCandidates = [path.join(__dirname, '.env'), path.join(__dirname, '..', '.env')];
+for (const envPath of envCandidates) {
+  dotenv.config({ path: envPath });
+}
+
+const configCandidates = [path.join(__dirname, 'db.config.js'), path.join(__dirname, '..', 'db.config.js')];
+let loadedConfigPath = null;
+let codeConfig = {};
+for (const configPath of configCandidates) {
+  if (!fs.existsSync(configPath)) continue;
+  try {
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    const cfg = require(configPath);
+    if (cfg && typeof cfg === 'object') {
+      codeConfig = cfg;
+      loadedConfigPath = configPath;
+      break;
+    }
+  } catch (err) {
+    console.error('⚠️ Failed to load code config:', configPath, err && err.message ? err.message : err);
+  }
+}
+
+function readSetting(name, fallback = '') {
+  if (typeof process.env[name] === 'string' && process.env[name] !== '') {
+    return process.env[name];
+  }
+
+  if (Object.prototype.hasOwnProperty.call(codeConfig, name)) {
+    const val = codeConfig[name];
+    if (val !== undefined && val !== null && val !== '') return val;
+  }
+
+  return fallback;
+}
+
+function readSettingAllowEmpty(name, fallback = '') {
+  if (typeof process.env[name] === 'string') {
+    return process.env[name];
+  }
+
+  if (Object.prototype.hasOwnProperty.call(codeConfig, name)) {
+    const val = codeConfig[name];
+    if (val !== undefined && val !== null) return val;
+  }
+
+  return fallback;
+}
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = Number(readSetting('PORT', 5000)) || 5000;
 
-const missingDbVars = ['DB_HOST', 'DB_USER', 'DB_NAME'].filter((k) => !process.env[k]);
+const DB_HOST = String(readSetting('DB_HOST', ''));
+const DB_PORT = Number(readSetting('DB_PORT', 3306)) || 3306;
+const DB_USER = String(readSetting('DB_USER', ''));
+const DB_PASSWORD = String(readSettingAllowEmpty('DB_PASSWORD', ''));
+const DB_NAME = String(readSetting('DB_NAME', ''));
+
+if (loadedConfigPath) {
+  console.log('Loaded code config from:', loadedConfigPath);
+}
+
+const missingDbVars = [
+  !DB_HOST ? 'DB_HOST' : null,
+  !DB_USER ? 'DB_USER' : null,
+  !DB_NAME ? 'DB_NAME' : null
+].filter(Boolean);
 if (missingDbVars.length) {
   console.error(
-    `⚠️ Missing DB env vars: ${missingDbVars.join(', ')}. Create backend/.env (or .env at project root) or set hosting environment variables.`
+    `⚠️ Missing DB settings: ${missingDbVars.join(', ')}. Use backend/.env, project-root .env, Plesk environment variables, or backend/db.config.js.`
   );
 }
 
+const configuredSessionSecret = String(readSettingAllowEmpty('SESSION_SECRET', ''));
 const SESSION_SECRET =
-  typeof process.env.SESSION_SECRET === 'string' && process.env.SESSION_SECRET.length >= 16
-    ? process.env.SESSION_SECRET
+  configuredSessionSecret.length >= 16
+    ? configuredSessionSecret
     : crypto.randomBytes(32).toString('hex');
 
-if (!process.env.SESSION_SECRET) {
+if (configuredSessionSecret.length < 16) {
   console.warn('⚠️ SESSION_SECRET is not set. Using a random value (sessions reset on restart).');
 }
 
+const configuredCommentIpSecret = String(readSettingAllowEmpty('COMMENT_IP_SECRET', ''));
 const COMMENT_IP_SECRET =
-  typeof process.env.COMMENT_IP_SECRET === 'string' && process.env.COMMENT_IP_SECRET.length >= 16
-    ? process.env.COMMENT_IP_SECRET
+  configuredCommentIpSecret.length >= 16
+    ? configuredCommentIpSecret
     : SESSION_SECRET;
 
-if (process.env.TRUST_PROXY === '1') {
+if (String(readSetting('TRUST_PROXY', '0')) === '1') {
   app.set('trust proxy', 1);
 }
 
@@ -74,8 +136,9 @@ app.use('/images', express.static(path.join(__dirname, '../images')));
 const siteRoot = path.resolve(__dirname, '..');
 const uploadDirCandidates = [];
 
-if (typeof process.env.UPLOAD_DIR === 'string' && process.env.UPLOAD_DIR.trim()) {
-  uploadDirCandidates.push(path.resolve(process.env.UPLOAD_DIR.trim()));
+const configuredUploadDir = String(readSetting('UPLOAD_DIR', ''));
+if (configuredUploadDir.trim()) {
+  uploadDirCandidates.push(path.resolve(configuredUploadDir.trim()));
 }
 
 if (fs.existsSync(path.join(siteRoot, 'App_Data'))) {
@@ -107,11 +170,11 @@ if (uploadDir) {
 
 // MySQL Pool
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME,
+  host: DB_HOST,
+  port: DB_PORT,
+  user: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
