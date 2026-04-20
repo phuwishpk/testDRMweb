@@ -63,6 +63,11 @@ function readSettingAllowEmpty(name, fallback = '') {
 
 const app = express();
 const PORT = Number(readSetting('PORT', 5000)) || 5000;
+const PORT_FALLBACK_LIMIT = Math.max(0, Number(readSetting('PORT_FALLBACK_LIMIT', 20)) || 20);
+const explicitPortConfigured =
+  (typeof process.env.PORT === 'string' && process.env.PORT !== '') ||
+  Object.prototype.hasOwnProperty.call(codeConfig, 'PORT');
+const AUTO_PORT_FALLBACK = String(readSetting('AUTO_PORT_FALLBACK', explicitPortConfigured ? '0' : '1')) === '1';
 
 const DB_HOST = String(readSetting('DB_HOST', ''));
 const DB_PORT = Number(readSetting('DB_PORT', 3306)) || 3306;
@@ -682,22 +687,52 @@ app.delete('/api/items/:id', async (req, res) => {
 
 // Startup
 (async () => {
-  const server = app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
+  const startServer = (requestedPort) => {
+    let currentPort = requestedPort;
+    let attempts = 0;
 
-  server.on('error', (err) => {
-    if (err && err.code === 'EADDRINUSE') {
-      console.error(`❌ Port ${PORT} is already in use.`);
-      console.error(
-        "Tip (Plesk/IIS): don't run `npm start` from the 'Run script' panel. Use the Node.js app 'Restart App' button instead."
-      );
-      process.exit(1);
-    }
+    const listen = () => {
+      const server = app.listen(currentPort, () => {
+        console.log(`Server is running on http://localhost:${currentPort}`);
+        if (currentPort !== requestedPort) {
+          console.warn(`⚠️ Port fallback active: requested ${requestedPort}, now using ${currentPort}.`);
+        }
+      });
 
-    console.error('❌ Server failed to start:', err && err.message ? err.message : err);
-    process.exit(1);
-  });
+      server.on('error', (err) => {
+        if (err && err.code === 'EADDRINUSE') {
+          const canRetry = AUTO_PORT_FALLBACK && attempts < PORT_FALLBACK_LIMIT;
+          if (canRetry) {
+            const nextPort = currentPort + 1;
+            attempts += 1;
+            console.warn(`⚠️ Port ${currentPort} is already in use. Retrying on port ${nextPort}...`);
+            currentPort = nextPort;
+            return listen();
+          }
+
+          console.error(`❌ Port ${currentPort} is already in use.`);
+          if (AUTO_PORT_FALLBACK && attempts >= PORT_FALLBACK_LIMIT) {
+            console.error(
+              `Tried ${PORT_FALLBACK_LIMIT + 1} port(s) starting from ${requestedPort} but none were available.`
+            );
+          }
+          console.error(
+            "Tip (Plesk/IIS): don't run `npm start` from the 'Run script' panel. Use the Node.js app 'Restart App' button instead."
+          );
+          process.exit(1);
+        }
+
+        console.error('❌ Server failed to start:', err && err.message ? err.message : err);
+        process.exit(1);
+      });
+
+      return server;
+    };
+
+    return listen();
+  };
+
+  startServer(PORT);
 
   try {
     await pool.query('SELECT 1');
