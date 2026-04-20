@@ -50,7 +50,7 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=your_password_here
 DB_NAME=simple_web_db
-PORT=5000
+PORT=5051
 ```
 
 ถ้าบนโฮสติ้งตั้ง Environment Variables ไม่ได้ ให้ใช้ไฟล์ตั้งค่าแบบโค้ดแทน:
@@ -71,7 +71,7 @@ npm start
 npm run dev
 ```
 
-Server จะทำงานที่ `http://localhost:5000`
+Server จะทำงานที่ `http://localhost:5051`
 
 ### 4. เปิด Frontend
 
@@ -122,13 +122,13 @@ Server จะทำงานที่ `http://localhost:5000`
 - ถ้าใช้โฮสติ้งที่ตั้ง env ยาก ให้สร้างไฟล์ `backend/db.config.js` จาก `backend/db.config.example.js`
 
 ### CORS Error
-- ตรวจสอบว่า Backend server ทำงานอยู่ที่ port 5000
+- ตรวจสอบว่า Backend server ทำงานอยู่ที่ port 5051
 - ตรวจสอบ CORS settings ใน `server.js`
 
 ### Frontend cannot fetch data
 - เปิด Browser DevTools (F12) ดู Console
 - ตรวจสอบ Network tab เพื่อดู API calls
-- ตรวจสอบว่า API_URL ใน `script.js` ถูกต้อง
+- แนะนำให้ใช้ API แบบ relative path เช่น `/api/items` (ในโปรเจกต์ตั้งค่าไว้แล้ว)
 
 ## 🪟 Deploy บน Plesk/IIS (Windows)
 

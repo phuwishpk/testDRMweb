@@ -9,7 +9,7 @@ module.exports = {
   DB_NAME: 'your_db_name',
 
   // Optional app settings
-  PORT: 5000,
+  PORT: 5051,
   SESSION_SECRET: 'replace_with_min_16_chars_secret',
   COMMENT_IP_SECRET: 'replace_with_min_16_chars_secret',
   TRUST_PROXY: '0'

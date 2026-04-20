@@ -62,7 +62,7 @@ function readSettingAllowEmpty(name, fallback = '') {
 }
 
 const app = express();
-const PORT = Number(readSetting('PORT', 5000)) || 5000;
+const PORT = Number(readSetting('PORT', 5051)) || 5051;
 const PORT_FALLBACK_LIMIT = Math.max(0, Number(readSetting('PORT_FALLBACK_LIMIT', 20)) || 20);
 const explicitPortConfigured =
   (typeof process.env.PORT === 'string' && process.env.PORT !== '') ||
