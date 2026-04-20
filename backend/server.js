@@ -62,12 +62,36 @@ function readSettingAllowEmpty(name, fallback = '') {
 }
 
 const app = express();
-const PORT = Number(readSetting('PORT', 5051)) || 5051;
+function normalizePort(value, fallback = 5051) {
+  if (typeof value === 'number' && Number.isInteger(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value !== 'string') {
+    return fallback;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return fallback;
+  }
+
+  const asNumber = Number(trimmed);
+  if (Number.isInteger(asNumber) && asNumber > 0) {
+    return asNumber;
+  }
+
+  // IIS/iisnode may pass a named pipe string instead of a numeric port.
+  return trimmed;
+}
+
+const PORT = normalizePort(readSettingAllowEmpty('PORT', 5051), 5051);
 const PORT_FALLBACK_LIMIT = Math.max(0, Number(readSetting('PORT_FALLBACK_LIMIT', 20)) || 20);
 const explicitPortConfigured =
   (typeof process.env.PORT === 'string' && process.env.PORT !== '') ||
   Object.prototype.hasOwnProperty.call(codeConfig, 'PORT');
-const AUTO_PORT_FALLBACK = String(readSetting('AUTO_PORT_FALLBACK', explicitPortConfigured ? '0' : '1')) === '1';
+const AUTO_PORT_FALLBACK =
+  typeof PORT === 'number' && String(readSetting('AUTO_PORT_FALLBACK', explicitPortConfigured ? '0' : '1')) === '1';
 
 const DB_HOST = String(readSetting('DB_HOST', ''));
 const DB_PORT = Number(readSetting('DB_PORT', 3306)) || 3306;
@@ -690,28 +714,39 @@ app.delete('/api/items/:id', async (req, res) => {
   const startServer = (requestedPort) => {
     let currentPort = requestedPort;
     let attempts = 0;
+    const requestedPortIsNumber = typeof requestedPort === 'number';
 
     const listen = () => {
       const server = app.listen(currentPort, () => {
-        console.log(`Server is running on http://localhost:${currentPort}`);
-        if (currentPort !== requestedPort) {
+        if (typeof currentPort === 'number') {
+          console.log(`Server is running on http://localhost:${currentPort}`);
+        } else {
+          console.log(`Server is running on ${currentPort}`);
+        }
+
+        if (requestedPortIsNumber && currentPort !== requestedPort) {
           console.warn(`⚠️ Port fallback active: requested ${requestedPort}, now using ${currentPort}.`);
         }
       });
 
       server.on('error', (err) => {
         if (err && err.code === 'EADDRINUSE') {
-          const canRetry = AUTO_PORT_FALLBACK && attempts < PORT_FALLBACK_LIMIT;
+          const canRetry = requestedPortIsNumber && AUTO_PORT_FALLBACK && attempts < PORT_FALLBACK_LIMIT;
           if (canRetry) {
-            const nextPort = currentPort + 1;
+            const nextPort = Number(currentPort) + 1;
             attempts += 1;
             console.warn(`⚠️ Port ${currentPort} is already in use. Retrying on port ${nextPort}...`);
             currentPort = nextPort;
             return listen();
           }
 
-          console.error(`❌ Port ${currentPort} is already in use.`);
-          if (AUTO_PORT_FALLBACK && attempts >= PORT_FALLBACK_LIMIT) {
+          if (requestedPortIsNumber) {
+            console.error(`❌ Port ${currentPort} is already in use.`);
+          } else {
+            console.error(`❌ Endpoint ${String(currentPort)} is already in use.`);
+          }
+
+          if (requestedPortIsNumber && AUTO_PORT_FALLBACK && attempts >= PORT_FALLBACK_LIMIT) {
             console.error(
               `Tried ${PORT_FALLBACK_LIMIT + 1} port(s) starting from ${requestedPort} but none were available.`
             );
