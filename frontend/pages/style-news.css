@@ -89,6 +89,11 @@ main {
   background: #fafafa;
 }
 
+.post-link {
+  display: block;
+  color: inherit;
+}
+
 .post-title {
   display: inline-block;
   font-weight: 800;

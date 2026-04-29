@@ -38,10 +38,15 @@ document.addEventListener('DOMContentLoaded', async function() {
       const item = document.createElement('article');
       item.className = 'post-item';
 
-      const titleLink = document.createElement('a');
-      titleLink.className = 'post-title';
-      titleLink.href = `post.html?slug=${encodeURIComponent(post.slug)}`;
-      titleLink.textContent = post.title || '(untitled)';
+      const wrapper = document.createElement('a');
+      wrapper.className = 'post-link';
+      wrapper.href = `post.html?slug=${encodeURIComponent(post.slug)}`;
+      wrapper.style.textDecoration = 'none';
+      wrapper.style.color = 'inherit';
+
+      const titleEl = document.createElement('div');
+      titleEl.className = 'post-title';
+      titleEl.textContent = post.title || '(untitled)';
 
       const meta = document.createElement('div');
       meta.className = 'post-meta';
@@ -51,10 +56,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       summary.className = 'post-summary';
       summary.textContent = post.summary || '';
 
-      item.appendChild(titleLink);
-      if (meta.textContent) item.appendChild(meta);
-      if (summary.textContent) item.appendChild(summary);
+      wrapper.appendChild(titleEl);
+      if (meta.textContent) wrapper.appendChild(meta);
+      if (summary.textContent) wrapper.appendChild(summary);
 
+      item.appendChild(wrapper);
       postsList.appendChild(item);
     });
   }
