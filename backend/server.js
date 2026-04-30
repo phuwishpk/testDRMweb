@@ -570,6 +570,7 @@ app.get('/api/posts/:slug', async (req, res) => {
       slug: rows[0].slug,
       summary: rows[0].summary,
       content,
+      created_by_admin_id: rows[0].created_by_admin_id,
       published_at: rows[0].published_at
     });
   } catch {

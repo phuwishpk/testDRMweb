@@ -170,10 +170,81 @@
     const contentEl = qs('postContent');
     const backLink = qs('backLink');
     const adminActions = qs('adminActions');
+    let currentAdmin = null;
 
     if (!slug) {
       setText(titleEl, 'ไม่พบ slug');
       return;
+    }
+
+    try {
+      const adminRes = await fetch('/api/admin/me', { credentials: 'include' });
+      const adminData = await adminRes.json().catch(() => ({}));
+      if (adminData && adminData.authenticated) {
+        currentAdmin = adminData;
+      }
+    } catch {
+      currentAdmin = null;
+    }
+
+    function renderAdminActions(post) {
+      if (!adminActions || !currentAdmin) return;
+
+      const ownerId = Number(post.created_by_admin_id);
+      const adminId = Number(currentAdmin.id);
+      const canEdit = !Number.isInteger(ownerId) || ownerId <= 0 || ownerId === adminId;
+
+      if (!canEdit) {
+        adminActions.innerHTML = '';
+        adminActions.style.display = 'none';
+        return;
+      }
+
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'edit-btn';
+      editBtn.textContent = 'แก้ไขเนื้อหา';
+      editBtn.addEventListener('click', () => {
+        window.location.href = `editor.html?id=${encodeURIComponent(post.id)}`;
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.textContent = 'ลบเนื้อหา';
+      deleteBtn.addEventListener('click', async () => {
+        const confirmed = window.confirm('ลบเนื้อหานี้ถาวรหรือไม่?');
+        if (!confirmed) return;
+
+        deleteBtn.disabled = true;
+        editBtn.disabled = true;
+
+        try {
+          const resDelete = await fetch(`/api/admin/posts/${encodeURIComponent(post.id)}`, {
+            method: 'DELETE',
+            credentials: 'include'
+          });
+
+          const data = await resDelete.json().catch(() => ({}));
+          if (!resDelete.ok) {
+            window.alert(data?.error || 'ลบไม่สำเร็จ');
+            deleteBtn.disabled = false;
+            editBtn.disabled = false;
+            return;
+          }
+
+          window.location.href = back.href;
+        } catch {
+          window.alert('ลบไม่สำเร็จ');
+          deleteBtn.disabled = false;
+          editBtn.disabled = false;
+        }
+      });
+
+      adminActions.innerHTML = '';
+      adminActions.appendChild(editBtn);
+      adminActions.appendChild(deleteBtn);
+      adminActions.style.display = 'flex';
     }
 
     try {
@@ -192,59 +263,7 @@
       backLink.textContent = back.label;
 
       renderContent(contentEl, post.content);
-
-      try {
-        const adminRes = await fetch(`/api/admin/posts/${encodeURIComponent(post.id)}`, { credentials: 'include' });
-        if (adminRes.ok) {
-          const editBtn = document.createElement('button');
-          editBtn.type = 'button';
-          editBtn.className = 'edit-btn';
-          editBtn.textContent = 'แก้ไขเนื้อหา';
-          editBtn.addEventListener('click', () => {
-            window.location.href = `editor.html?id=${encodeURIComponent(post.id)}`;
-          });
-
-          const deleteBtn = document.createElement('button');
-          deleteBtn.type = 'button';
-          deleteBtn.className = 'delete-btn';
-          deleteBtn.textContent = 'ลบเนื้อหา';
-          deleteBtn.addEventListener('click', async () => {
-            const confirmed = window.confirm('ลบเนื้อหานี้ถาวรหรือไม่?');
-            if (!confirmed) return;
-
-            deleteBtn.disabled = true;
-            editBtn.disabled = true;
-
-            try {
-              const resDelete = await fetch(`/api/admin/posts/${encodeURIComponent(post.id)}`, {
-                method: 'DELETE',
-                credentials: 'include'
-              });
-
-              const data = await resDelete.json().catch(() => ({}));
-              if (!resDelete.ok) {
-                window.alert(data?.error || 'ลบไม่สำเร็จ');
-                deleteBtn.disabled = false;
-                editBtn.disabled = false;
-                return;
-              }
-
-              window.location.href = back.href;
-            } catch {
-              window.alert('ลบไม่สำเร็จ');
-              deleteBtn.disabled = false;
-              editBtn.disabled = false;
-            }
-          });
-
-          adminActions.innerHTML = '';
-          adminActions.appendChild(editBtn);
-          adminActions.appendChild(deleteBtn);
-          adminActions.style.display = 'flex';
-        }
-      } catch {
-        // no admin controls
-      }
+      renderAdminActions(post);
     } catch {
       setText(titleEl, 'โหลดเนื้อหาไม่สำเร็จ');
       return;
