@@ -233,6 +233,64 @@ function generateSlug() {
   return `p-${t}-${r}`;
 }
 
+async function ensurePostsOwnershipSchema() {
+  try {
+    const [rows] = await pool.execute(
+      "SELECT COUNT(*) AS count FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'posts' AND COLUMN_NAME = 'created_by_admin_id'"
+    );
+
+    if (Number(rows[0]?.count) === 0) {
+      await pool.execute('ALTER TABLE posts ADD COLUMN created_by_admin_id INT NULL AFTER category');
+      await pool.execute('CREATE INDEX idx_posts_created_by_admin_id ON posts (created_by_admin_id)');
+    }
+  } catch (err) {
+    if (err && err.code === 'ER_DUP_KEYNAME') return;
+    if (err && err.code === 'ER_DUP_FIELDNAME') return;
+    console.error('⚠️ ensurePostsOwnershipSchema failed:', err && err.message ? err.message : err);
+  }
+}
+
+async function backfillPostOwnership(adminId) {
+  try {
+    if (!Number.isInteger(adminId) || adminId <= 0) return;
+    await pool.execute('UPDATE posts SET created_by_admin_id = ? WHERE created_by_admin_id IS NULL', [adminId]);
+  } catch (err) {
+    console.error('⚠️ backfillPostOwnership failed:', err && err.message ? err.message : err);
+  }
+}
+
+async function getPostForAdmin(postId) {
+  const [rows] = await pool.execute(
+    'SELECT id, category, title, slug, summary, content_json, published_at, created_by_admin_id FROM posts WHERE id = ? LIMIT 1',
+    [postId]
+  );
+
+  if (!rows.length) return { ok: false, status: 404, error: 'Not found' };
+  return { ok: true, post: rows[0] };
+}
+
+async function ensureAdminOwnsPost(postId, adminId) {
+  const result = await getPostForAdmin(postId);
+  if (!result.ok) return result;
+
+  const ownerId = Number(result.post.created_by_admin_id);
+  if (!Number.isInteger(adminId) || adminId <= 0) {
+    return { ok: false, status: 403, error: 'Forbidden' };
+  }
+
+  if (!Number.isInteger(ownerId) || ownerId <= 0) {
+    await pool.execute('UPDATE posts SET created_by_admin_id = ? WHERE id = ? AND created_by_admin_id IS NULL', [adminId, postId]);
+    result.post.created_by_admin_id = adminId;
+    return result;
+  }
+
+  if (ownerId !== adminId) {
+    return { ok: false, status: 403, error: 'Forbidden' };
+  }
+
+  return result;
+}
+
 function requireAdmin(req, res, next) {
   if (req.session && req.session.admin && req.session.admin.username === 'admin') {
     return next();
@@ -348,7 +406,7 @@ app.get('/health', (req, res) => {
 // --- Admin Auth ---
 app.get('/api/admin/me', (req, res) => {
   if (req.session && req.session.admin && req.session.admin.username === 'admin') {
-    return res.json({ authenticated: true, username: 'admin', role: 'admin' });
+    return res.json({ authenticated: true, id: req.session.admin.id, username: 'admin', role: 'admin' });
   }
   return res.json({ authenticated: false });
 });
@@ -519,6 +577,37 @@ app.get('/api/posts/:slug', async (req, res) => {
   }
 });
 
+app.get('/api/admin/posts/:id', enforceSameOriginForAdmin, requireAdmin, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: 'Invalid id' });
+
+    const adminId = Number(req.session?.admin?.id);
+    const result = await ensureAdminOwnsPost(id, adminId);
+    if (!result.ok) return res.status(result.status).json({ error: result.error });
+
+    let content = { blocks: [] };
+    try {
+      content = typeof result.post.content_json === 'string' ? JSON.parse(result.post.content_json) : result.post.content_json;
+    } catch {
+      content = { blocks: [] };
+    }
+
+    return res.json({
+      id: result.post.id,
+      category: result.post.category,
+      title: result.post.title,
+      slug: result.post.slug,
+      summary: result.post.summary,
+      content,
+      published_at: result.post.published_at,
+      created_by_admin_id: result.post.created_by_admin_id
+    });
+  } catch {
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // --- Posts (admin-only) ---
 app.post('/api/admin/posts', enforceSameOriginForAdmin, requireAdmin, async (req, res) => {
   try {
@@ -537,10 +626,11 @@ app.post('/api/admin/posts', enforceSameOriginForAdmin, requireAdmin, async (req
 
     const slug = generateSlug();
     const contentJson = JSON.stringify({ blocks: v.blocks });
+    const adminId = Number(req.session?.admin?.id);
 
     const [result] = await pool.execute(
-      'INSERT INTO posts (category, title, slug, summary, content_json, published_at) VALUES (?, ?, ?, ?, ?, NOW())',
-      [category, title, slug, summary || null, contentJson]
+      'INSERT INTO posts (category, created_by_admin_id, title, slug, summary, content_json, published_at) VALUES (?, ?, ?, ?, ?, ?, NOW())',
+      [category, adminId, title, slug, summary || null, contentJson]
     );
 
     return res.status(201).json({ ok: true, id: result.insertId, slug });
@@ -554,12 +644,18 @@ app.put('/api/admin/posts/:id', enforceSameOriginForAdmin, requireAdmin, async (
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: 'Invalid id' });
 
+    const adminId = Number(req.session?.admin?.id);
+    const result = await ensureAdminOwnsPost(id, adminId);
+    if (!result.ok) return res.status(result.status).json({ error: result.error });
+
+    const category = normalizeCategory(req.body?.category) || result.post.category;
     const title = typeof req.body?.title === 'string' ? req.body.title.trim() : '';
     const summary = typeof req.body?.summary === 'string' ? req.body.summary.trim() : '';
     const blocks = req.body?.content?.blocks;
 
     if (!title || title.length > 255) return res.status(400).json({ error: 'Invalid title' });
     if (summary.length > 1000) return res.status(400).json({ error: 'Summary too long' });
+    if (!category) return res.status(400).json({ error: 'Invalid category' });
 
     const v = validateAndNormalizeBlocks(blocks);
     if (!v.ok) return res.status(400).json({ error: v.message });
@@ -567,11 +663,11 @@ app.put('/api/admin/posts/:id', enforceSameOriginForAdmin, requireAdmin, async (
     const contentJson = JSON.stringify({ blocks: v.blocks });
 
     await pool.execute(
-      'UPDATE posts SET title = ?, summary = ?, content_json = ?, updated_at = NOW() WHERE id = ?',
-      [title, summary || null, contentJson, id]
+      'UPDATE posts SET category = ?, title = ?, summary = ?, content_json = ?, updated_at = NOW() WHERE id = ?',
+      [category, title, summary || null, contentJson, id]
     );
 
-    return res.json({ ok: true });
+    return res.json({ ok: true, slug: result.post.slug, category });
   } catch {
     return res.status(500).json({ error: 'Server error' });
   }
@@ -581,6 +677,10 @@ app.delete('/api/admin/posts/:id', enforceSameOriginForAdmin, requireAdmin, asyn
   try {
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: 'Invalid id' });
+
+    const adminId = Number(req.session?.admin?.id);
+    const result = await ensureAdminOwnsPost(id, adminId);
+    if (!result.ok) return res.status(result.status).json({ error: result.error });
 
     await pool.execute('DELETE FROM posts WHERE id = ?', [id]);
     return res.json({ ok: true });
@@ -773,6 +873,11 @@ app.delete('/api/items/:id', async (req, res) => {
     await pool.query('SELECT 1');
     console.log('Connected to MySQL database');
     await ensureAdminSeed();
+    await ensurePostsOwnershipSchema();
+    const [adminRows] = await pool.execute('SELECT id FROM admins WHERE username = ? LIMIT 1', ['admin']);
+    if (adminRows.length > 0) {
+      await backfillPostOwnership(adminRows[0].id);
+    }
   } catch (err) {
     console.error('Database connection failed:', err && err.message ? err.message : err);
   }

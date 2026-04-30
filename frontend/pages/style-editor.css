@@ -59,6 +59,14 @@ main {
   background: #222;
 }
 
+.btn.danger {
+  background: #b3261e;
+}
+
+.btn.danger:hover {
+  background: #8f1d17;
+}
+
 .editor {
   display: grid;
   gap: 14px;

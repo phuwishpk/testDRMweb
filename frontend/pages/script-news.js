@@ -113,3 +113,4 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 
   await Promise.all([loadPosts(), refreshAdminButton()]);
+});

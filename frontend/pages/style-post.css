@@ -43,6 +43,41 @@ main {
   margin-bottom: 14px;
 }
 
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+}
+
+.admin-actions button,
+.admin-actions a {
+  border: 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.admin-actions .edit-btn {
+  background: #667eea;
+  color: #fff;
+}
+
+.admin-actions .edit-btn:hover {
+  background: #5568d8;
+}
+
+.admin-actions .delete-btn {
+  background: #b3261e;
+  color: #fff;
+}
+
+.admin-actions .delete-btn:hover {
+  background: #8f1d17;
+}
+
 .content p {
   margin: 0 0 12px;
   line-height: 1.8;

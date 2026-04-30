@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS media (
 CREATE TABLE IF NOT EXISTS posts (
   id INT PRIMARY KEY AUTO_INCREMENT,
   category ENUM('thai_forum','news','event') NOT NULL,
+  created_by_admin_id INT NULL,
   title VARCHAR(255) NOT NULL,
   slug VARCHAR(160) NOT NULL,
   summary TEXT,
@@ -47,6 +48,7 @@ CREATE TABLE IF NOT EXISTS posts (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   published_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_posts_slug (slug),
+  INDEX idx_posts_created_by_admin_id (created_by_admin_id),
   INDEX idx_posts_category_published (category, published_at),
   INDEX idx_posts_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

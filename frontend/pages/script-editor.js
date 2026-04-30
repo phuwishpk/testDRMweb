@@ -27,8 +27,62 @@
   const state = {
     blocks: [],
     activeImageBlockIndex: null,
-    media: []
+    media: [],
+    editingPostId: null
   };
+
+  function setEditorMode(isEdit) {
+    const saveBtn = qs('saveBtn');
+    const deleteBtn = qs('deleteBtn');
+    const heading = document.querySelector('.page-content h2');
+
+    if (saveBtn) saveBtn.textContent = isEdit ? 'บันทึกการแก้ไข' : 'บันทึก';
+    if (deleteBtn) deleteBtn.style.display = isEdit ? 'inline-block' : 'none';
+    if (heading) heading.textContent = isEdit ? 'แก้ไขเนื้อหา (Admin)' : 'เพิ่มเนื้อหา (Admin)';
+  }
+
+  function applyPostToForm(post) {
+    state.editingPostId = Number(post.id) || null;
+    state.blocks = Array.isArray(post.content?.blocks) ? post.content.blocks.map(block => ({ ...block })) : [];
+    state.activeImageBlockIndex = null;
+
+    const categoryEl = qs('category');
+    const titleEl = qs('title');
+    const summaryEl = qs('summary');
+    const cancelLink = qs('cancelLink');
+
+    if (categoryEl && post.category) categoryEl.value = post.category;
+    if (titleEl) titleEl.value = post.title || '';
+    if (summaryEl) summaryEl.value = post.summary || '';
+    if (cancelLink) {
+      const back = post.category === 'news' ? 'news.html' : post.category === 'event' ? 'event.html' : 'thai-forum.html';
+      cancelLink.setAttribute('href', back);
+    }
+
+    setEditorMode(true);
+    renderBlocksEditor();
+    renderPreview();
+  }
+
+  async function loadPostForEdit(id) {
+    const msg = qs('formMessage');
+    try {
+      const res = await fetch(`/api/admin/posts/${encodeURIComponent(id)}`, { credentials: 'include' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setText(msg, data?.error || 'โหลดข้อมูลที่แก้ไขไม่สำเร็จ');
+        return false;
+      }
+
+      const post = await res.json();
+      applyPostToForm(post);
+      setText(msg, '');
+      return true;
+    } catch {
+      setText(msg, 'โหลดข้อมูลที่แก้ไขไม่สำเร็จ');
+      return false;
+    }
+  }
 
   function renderBlocksEditor() {
     const container = qs('blocks');
@@ -376,15 +430,25 @@
     notAdmin.style.display = 'none';
     form.style.display = 'grid';
 
-    // init category from query param
+    setEditorMode(false);
+
     const p = new URLSearchParams(window.location.search);
-    const cat = normalizeCategory(p.get('category'));
+    const editId = Number(p.get('id'));
     const categoryEl = qs('category');
-    if (cat) categoryEl.value = cat;
+
+    if (Number.isInteger(editId) && editId > 0) {
+      const loaded = await loadPostForEdit(editId);
+      if (!loaded) return;
+    } else {
+      // init category from query param
+      const cat = normalizeCategory(p.get('category'));
+      if (cat) categoryEl.value = cat;
+    }
 
     // cancel link back to category page
     const cancelLink = qs('cancelLink');
-    const back = cat === 'news' ? 'news.html' : cat === 'event' ? 'event.html' : 'thai-forum.html';
+    const currentCategory = normalizeCategory(categoryEl && categoryEl.value ? categoryEl.value : p.get('category'));
+    const back = currentCategory === 'news' ? 'news.html' : currentCategory === 'event' ? 'event.html' : 'thai-forum.html';
     cancelLink.setAttribute('href', back);
 
     qs('addText').addEventListener('click', () => {
@@ -464,8 +528,9 @@
       };
 
       try {
-        const res = await fetch('/api/admin/posts', {
-          method: 'POST',
+        const isEdit = Number.isInteger(state.editingPostId) && state.editingPostId > 0;
+        const res = await fetch(isEdit ? `/api/admin/posts/${encodeURIComponent(state.editingPostId)}` : '/api/admin/posts', {
+          method: isEdit ? 'PUT' : 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify(payload)
@@ -489,6 +554,36 @@
         setText(msg, 'บันทึกไม่สำเร็จ');
       }
     });
+
+    const deleteBtn = qs('deleteBtn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', async () => {
+        if (!Number.isInteger(state.editingPostId) || state.editingPostId <= 0) return;
+
+        const confirmed = window.confirm('ลบเนื้อหานี้ถาวรหรือไม่?');
+        if (!confirmed) return;
+
+        const msg = qs('formMessage');
+        setText(msg, 'กำลังลบ...');
+
+        try {
+          const res = await fetch(`/api/admin/posts/${encodeURIComponent(state.editingPostId)}`, {
+            method: 'DELETE',
+            credentials: 'include'
+          });
+
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            setText(msg, data?.error || 'ลบไม่สำเร็จ');
+            return;
+          }
+
+          window.location.href = qs('category').value === 'news' ? 'news.html' : qs('category').value === 'event' ? 'event.html' : 'thai-forum.html';
+        } catch {
+          setText(msg, 'ลบไม่สำเร็จ');
+        }
+      });
+    }
 
     renderBlocksEditor();
     renderPreview();
