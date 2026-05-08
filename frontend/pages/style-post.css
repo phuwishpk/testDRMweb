@@ -12,10 +12,17 @@ main {
   flex: 1;
 }
 
+.container {
+  max-width: 1200px;
+  padding: 48px 24px;
+}
+
 .page-content {
   background: white;
-  padding: 28px;
-  border-radius: 10px;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 36px 40px;
+  border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -119,14 +126,14 @@ main {
 
 .comments {
   display: grid;
-  gap: 10px;
-  margin: 12px 0 16px;
+  gap: 14px;
+  margin: 14px 0 20px;
 }
 
 .comment {
   border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 12px;
+  padding: 14px 16px;
   background: #fafafa;
 }
 
@@ -179,10 +186,14 @@ main {
 .field input,
 .field textarea {
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1em;
+}
+
+.field textarea {
+  min-height: 120px;
 }
 
 .actions {
@@ -213,4 +224,15 @@ main {
 
 .footer {
   margin-top: auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 24px 12px;
+  }
+
+  .page-content {
+    max-width: 100%;
+    padding: 24px 18px;
+  }
 }
