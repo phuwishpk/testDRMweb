@@ -267,7 +267,11 @@
       backLink.href = back.href;
       backLink.textContent = back.label;
 
-      renderContent(contentEl, post.content);
+      if (post.content_html) {
+        contentEl.innerHTML = post.content_html;
+      } else {
+        renderContent(contentEl, post.content);
+      }
       renderAdminActions(post);
     } catch {
       setText(titleEl, 'โหลดเนื้อหาไม่สำเร็จ');

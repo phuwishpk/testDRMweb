@@ -85,31 +85,72 @@
         </div>
 
         <div class="section-header">
-          <h3>Content blocks</h3>
-          <div class="block-actions">
-            <button type="button" id="addText">เพิ่มข้อความ</button>
-            <button type="button" id="addLink">เพิ่มลิงก์</button>
-            <button type="button" id="addImage">เพิ่มรูป</button>
-          </div>
+          <h3>Content</h3>
+          <span class="note">เลือกข้อความแล้วจัดรูปแบบได้ทันที (Paste รูปจาก Clipboard ได้)</span>
         </div>
 
-        <div id="blocks" class="blocks"></div>
+        <div class="wysiwyg-toolbar" id="wysiwygToolbar">
+          <button type="button" data-cmd="bold" class="fmt-btn">ตัวหนา</button>
+          <button type="button" data-cmd="italic" class="fmt-btn">ตัวเอียง</button>
+          <button type="button" data-cmd="underline" class="fmt-btn">เส้นใต้</button>
+          <button type="button" data-cmd="formatBlock" data-value="H1" class="fmt-btn">H1</button>
+          <button type="button" data-cmd="formatBlock" data-value="H2" class="fmt-btn">H2</button>
+          <button type="button" data-cmd="insertUnorderedList" class="fmt-btn">• List</button>
+          <button type="button" data-cmd="insertOrderedList" class="fmt-btn">1. List</button>
+          <button type="button" data-cmd="justifyLeft" class="fmt-btn">ชิดซ้าย</button>
+          <button type="button" data-cmd="justifyCenter" class="fmt-btn">กึ่งกลาง</button>
+          <button type="button" data-cmd="justifyRight" class="fmt-btn">ชิดขวา</button>
+          <button type="button" data-cmd="justifyFull" class="fmt-btn">เต็มบรรทัด</button>
 
-        <div class="section-header">
-          <h3>คลังรูปภาพ</h3>
-          <div class="media-actions">
-            <input id="mediaFile" type="file" accept="image/png,image/jpeg,image/webp" />
-            <button type="button" id="uploadMedia">อัปโหลด</button>
-            <span class="note">รองรับ jpg/png/webp (สูงสุด 5MB)</span>
-          </div>
+          <label class="toolbar-label">สี
+            <input type="color" id="fontColorPicker" value="#000000" />
+          </label>
+
+          <label class="toolbar-label">ขนาด
+            <select id="fontSizeSelect">
+              <option value="12">12px</option>
+              <option value="14">14px</option>
+              <option value="16" selected>16px</option>
+              <option value="18">18px</option>
+              <option value="20">20px</option>
+              <option value="24">24px</option>
+              <option value="28">28px</option>
+              <option value="32">32px</option>
+            </select>
+          </label>
+
+          <label class="toolbar-label">Font
+            <select id="fontFamilySelect">
+              <option value="inherit" selected>Default</option>
+              <option value="Arial, Helvetica, sans-serif">Arial</option>
+              <option value="'Times New Roman', Times, serif">Times New Roman</option>
+              <option value="'Courier New', Courier, monospace">Courier</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="Verdana, sans-serif">Verdana</option>
+              <option value="'Segoe UI', sans-serif">Segoe UI</option>
+              <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+              <option value="Impact, fantasy">Impact</option>
+              <option value="'Prompt', sans-serif">Prompt (Thai)</option>
+              <option value="'Sarabun', sans-serif">Sarabun (Thai)</option>
+              <option value="'Anuphan', sans-serif">Anuphan (Thai)</option>
+              <option value="'TH SarabunPSK', sans-serif">TH SarabunPSK</option>
+            </select>
+          </label>
+
+          <label class="toolbar-label">Line
+            <select id="lineHeightSelect">
+              <option value="1.2">1.2</option>
+              <option value="1.4">1.4</option>
+              <option value="1.6" selected>1.6</option>
+              <option value="1.8">1.8</option>
+              <option value="2">2.0</option>
+            </select>
+          </label>
+
+          <button type="button" id="insertLinkBtn" class="fmt-btn">ใส่ลิงก์</button>
         </div>
 
-        <div id="mediaGallery" class="media-gallery"></div>
-
-        <div class="section-header">
-          <h3>Preview</h3>
-        </div>
-        <div id="preview" class="preview" aria-live="polite"></div>
+        <div id="wysiwygEditor" class="wysiwyg-editor" contenteditable="true" aria-label="Content editor"></div>
 
         <div class="form-actions">
           <button id="saveBtn" type="submit">บันทึก</button>

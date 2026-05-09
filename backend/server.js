@@ -130,14 +130,19 @@ const COMMENT_IP_SECRET =
     ? configuredCommentIpSecret
     : SESSION_SECRET;
 
+const CONTENT_HTML_MAX = Math.max(
+  0,
+  Number(readSetting('CONTENT_HTML_MAX', 30 * 1024 * 1024)) || 30 * 1024 * 1024
+);
+
 if (String(readSetting('TRUST_PROXY', '0')) === '1') {
   app.set('trust proxy', 1);
 }
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json({ limit: '1mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }));
+app.use(bodyParser.json({ limit: '35mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '35mb' }));
 
 app.use(
   session({
@@ -250,6 +255,21 @@ async function ensurePostsOwnershipSchema() {
   }
 }
 
+async function ensureContentHtmlSchema() {
+  try {
+    const [rows] = await pool.execute(
+      "SELECT COUNT(*) AS count FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'posts' AND COLUMN_NAME = 'content_html'"
+    );
+
+    if (Number(rows[0]?.count) === 0) {
+      await pool.execute('ALTER TABLE posts ADD COLUMN content_html LONGTEXT NULL AFTER content_json');
+    }
+  } catch (err) {
+    if (err && err.code === 'ER_DUP_FIELDNAME') return;
+    console.error('⚠️ ensureContentHtmlSchema failed:', err && err.message ? err.message : err);
+  }
+}
+
 async function backfillPostOwnership(adminId) {
   try {
     if (!Number.isInteger(adminId) || adminId <= 0) return;
@@ -261,7 +281,7 @@ async function backfillPostOwnership(adminId) {
 
 async function getPostForAdmin(postId) {
   const [rows] = await pool.execute(
-    'SELECT id, category, title, slug, summary, content_json, published_at, created_by_admin_id FROM posts WHERE id = ? LIMIT 1',
+    'SELECT id, category, title, slug, summary, content_json, content_html, published_at, created_by_admin_id FROM posts WHERE id = ? LIMIT 1',
     [postId]
   );
 
@@ -362,6 +382,15 @@ function validateAndNormalizeBlocks(blocks) {
 
   if (out.length === 0) return { ok: false, message: 'Content is empty' };
   return { ok: true, blocks: out };
+}
+
+function validateContentHtml(html) {
+  if (typeof html !== 'string') return { ok: false, message: 'content_html must be a string' };
+  const trimmed = html.trim();
+  if (!trimmed) return { ok: false, message: 'Content is empty' };
+  if (trimmed.length > CONTENT_HTML_MAX) return { ok: false, message: 'Content HTML too large' };
+  if (/<\s*script/i.test(trimmed)) return { ok: false, message: 'Script tags are not allowed' };
+  return { ok: true, html: trimmed };
 }
 
 async function ensureAdminSeed() {
@@ -550,7 +579,7 @@ app.get('/api/posts/:slug', async (req, res) => {
     if (!slug || slug.length > 160) return res.status(400).json({ error: 'Invalid slug' });
 
     const [rows] = await pool.execute(
-      'SELECT id, category, title, slug, summary, content_json, published_at FROM posts WHERE slug = ? AND published_at IS NOT NULL LIMIT 1',
+      'SELECT id, category, title, slug, summary, content_json, content_html, published_at FROM posts WHERE slug = ? AND published_at IS NOT NULL LIMIT 1',
       [slug]
     );
 
@@ -569,6 +598,7 @@ app.get('/api/posts/:slug', async (req, res) => {
       title: rows[0].title,
       slug: rows[0].slug,
       summary: rows[0].summary,
+      content_html: rows[0].content_html || null,
       content,
       created_by_admin_id: rows[0].created_by_admin_id,
       published_at: rows[0].published_at
@@ -600,6 +630,7 @@ app.get('/api/admin/posts/:id', enforceSameOriginForAdmin, requireAdmin, async (
       title: result.post.title,
       slug: result.post.slug,
       summary: result.post.summary,
+      content_html: result.post.content_html || null,
       content,
       published_at: result.post.published_at,
       created_by_admin_id: result.post.created_by_admin_id
@@ -617,21 +648,31 @@ app.post('/api/admin/posts', enforceSameOriginForAdmin, requireAdmin, async (req
     const summary = typeof req.body?.summary === 'string' ? req.body.summary.trim() : '';
 
     const blocks = req.body?.content?.blocks;
+    const contentHtmlRaw = typeof req.body?.content_html === 'string' ? req.body.content_html : '';
 
     if (!category) return res.status(400).json({ error: 'Invalid category' });
     if (!title || title.length > 255) return res.status(400).json({ error: 'Invalid title' });
     if (summary.length > 1000) return res.status(400).json({ error: 'Summary too long' });
 
-    const v = validateAndNormalizeBlocks(blocks);
-    if (!v.ok) return res.status(400).json({ error: v.message });
+    let contentJson = JSON.stringify({ blocks: [] });
+    let contentHtml = null;
+
+    if (contentHtmlRaw.trim()) {
+      const vHtml = validateContentHtml(contentHtmlRaw);
+      if (!vHtml.ok) return res.status(400).json({ error: vHtml.message });
+      contentHtml = vHtml.html;
+    } else {
+      const v = validateAndNormalizeBlocks(blocks);
+      if (!v.ok) return res.status(400).json({ error: v.message });
+      contentJson = JSON.stringify({ blocks: v.blocks });
+    }
 
     const slug = generateSlug();
-    const contentJson = JSON.stringify({ blocks: v.blocks });
     const adminId = Number(req.session?.admin?.id);
 
     const [result] = await pool.execute(
-      'INSERT INTO posts (category, created_by_admin_id, title, slug, summary, content_json, published_at) VALUES (?, ?, ?, ?, ?, ?, NOW())',
-      [category, adminId, title, slug, summary || null, contentJson]
+      'INSERT INTO posts (category, created_by_admin_id, title, slug, summary, content_json, content_html, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())',
+      [category, adminId, title, slug, summary || null, contentJson, contentHtml]
     );
 
     return res.status(201).json({ ok: true, id: result.insertId, slug });
@@ -653,19 +694,34 @@ app.put('/api/admin/posts/:id', enforceSameOriginForAdmin, requireAdmin, async (
     const title = typeof req.body?.title === 'string' ? req.body.title.trim() : '';
     const summary = typeof req.body?.summary === 'string' ? req.body.summary.trim() : '';
     const blocks = req.body?.content?.blocks;
+    const contentHtmlRaw = typeof req.body?.content_html === 'string' ? req.body.content_html : '';
 
     if (!title || title.length > 255) return res.status(400).json({ error: 'Invalid title' });
     if (summary.length > 1000) return res.status(400).json({ error: 'Summary too long' });
     if (!category) return res.status(400).json({ error: 'Invalid category' });
 
-    const v = validateAndNormalizeBlocks(blocks);
-    if (!v.ok) return res.status(400).json({ error: v.message });
+    let contentJson = result.post.content_json;
+    let contentHtml = result.post.content_html || null;
 
-    const contentJson = JSON.stringify({ blocks: v.blocks });
+    if (contentHtmlRaw.trim()) {
+      const vHtml = validateContentHtml(contentHtmlRaw);
+      if (!vHtml.ok) return res.status(400).json({ error: vHtml.message });
+      contentHtml = vHtml.html;
+    }
+
+    if (Array.isArray(blocks)) {
+      const v = validateAndNormalizeBlocks(blocks);
+      if (!v.ok) return res.status(400).json({ error: v.message });
+      contentJson = JSON.stringify({ blocks: v.blocks });
+    }
+
+    if (!contentHtml && (!contentJson || contentJson === '')) {
+      return res.status(400).json({ error: 'Content is empty' });
+    }
 
     await pool.execute(
-      'UPDATE posts SET category = ?, title = ?, summary = ?, content_json = ?, updated_at = NOW() WHERE id = ?',
-      [category, title, summary || null, contentJson, id]
+      'UPDATE posts SET category = ?, title = ?, summary = ?, content_json = ?, content_html = ?, updated_at = NOW() WHERE id = ?',
+      [category, title, summary || null, contentJson, contentHtml, id]
     );
 
     return res.json({ ok: true, slug: result.post.slug, category });
@@ -874,6 +930,7 @@ app.delete('/api/items/:id', async (req, res) => {
     await pool.query('SELECT 1');
     console.log('Connected to MySQL database');
     await ensureAdminSeed();
+    await ensureContentHtmlSchema();
     await ensurePostsOwnershipSchema();
     const [adminRows] = await pool.execute('SELECT id FROM admins WHERE username = ? LIMIT 1', ['admin']);
     if (adminRows.length > 0) {

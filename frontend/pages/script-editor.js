@@ -40,9 +40,7 @@
     }
 
   const state = {
-    blocks: [],
-    activeImageBlockIndex: null,
-    media: [],
+    contentHtml: '',
     editingPostId: null
   };
 
@@ -56,15 +54,51 @@
     if (heading) heading.textContent = isEdit ? 'แก้ไขเนื้อหา (Admin)' : 'เพิ่มเนื้อหา (Admin)';
   }
 
+  function blocksToHtml(blocks) {
+    if (!Array.isArray(blocks)) return '';
+    const parts = [];
+    blocks.forEach((b) => {
+      if (!b || typeof b !== 'object') return;
+      const type = String(b.type || '').toLowerCase();
+      if (type === 'text') {
+        const text = String(b.text || '').trim();
+        if (!text) return;
+        text.split(/\n+/).forEach(line => {
+          parts.push(`<p>${line.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`);
+        });
+        return;
+      }
+      if (type === 'link') {
+        const url = String(b.url || '').trim();
+        const label = String(b.label || '').trim() || url;
+        if (!url) return;
+        parts.push(`<p><a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a></p>`);
+        return;
+      }
+      if (type === 'image') {
+        const src = String(b.src || '').trim();
+        if (!src) return;
+        const align = String(b.align || 'center').toLowerCase();
+        const width = Number(b.widthPercent);
+        const widthPercent = Number.isFinite(width) ? Math.min(Math.max(width, 10), 100) : 100;
+        const caption = String(b.caption || '').trim();
+        parts.push(
+          `<div style="text-align:${align};"><img src="${src}" style="width:${widthPercent}%;" alt="image" /></div>` +
+            (caption ? `<div style="text-align:${align}; color:#666; font-size:0.95em;">${caption}</div>` : '')
+        );
+      }
+    });
+    return parts.join('');
+  }
+
   function applyPostToForm(post) {
     state.editingPostId = Number(post.id) || null;
-    state.blocks = Array.isArray(post.content?.blocks) ? post.content.blocks.map(block => ({ ...block })) : [];
-    state.activeImageBlockIndex = null;
 
     const categoryEl = qs('category');
     const titleEl = qs('title');
     const summaryEl = qs('summary');
     const cancelLink = qs('cancelLink');
+    const editor = qs('wysiwygEditor');
 
     if (categoryEl && post.category) categoryEl.value = post.category;
     if (titleEl) titleEl.value = post.title || '';
@@ -74,9 +108,13 @@
       cancelLink.setAttribute('href', back);
     }
 
+    const htmlFromPost = typeof post.content_html === 'string' ? post.content_html : '';
+    if (editor) {
+      editor.innerHTML = htmlFromPost || blocksToHtml(post.content?.blocks);
+      state.contentHtml = editor.innerHTML;
+    }
+
     setEditorMode(true);
-    renderBlocksEditor();
-    renderPreview();
   }
 
   async function loadPostForEdit(id) {
@@ -667,11 +705,150 @@
     }
   }
 
+  function insertHtmlAtCursor(html) {
+    if (document.queryCommandSupported && document.queryCommandSupported('insertHTML')) {
+      document.execCommand('insertHTML', false, html);
+      return;
+    }
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    const el = document.createElement('div');
+    el.innerHTML = html;
+    const frag = document.createDocumentFragment();
+    while (el.firstChild) frag.appendChild(el.firstChild);
+    range.insertNode(frag);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function applyInlineStyle(editor, styleProp, value) {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.toString().length === 0) return;
+    const range = sel.getRangeAt(0);
+
+    // Ensure selection is inside editor
+    const container = range.commonAncestorContainer;
+    if (!editor.contains(container)) return;
+
+    const fragment = range.extractContents();
+    const walker = document.createTreeWalker(fragment, NodeFilter.SHOW_ELEMENT, null);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((el) => {
+      if (el && el.style && el.style[styleProp]) {
+        el.style.removeProperty(styleProp);
+        if (!el.getAttribute('style')) el.removeAttribute('style');
+      }
+    });
+
+    const span = document.createElement('span');
+    if (value !== 'inherit') {
+      span.style[styleProp] = value;
+    }
+    span.appendChild(fragment);
+    range.insertNode(span);
+
+    sel.removeAllRanges();
+    const newRange = document.createRange();
+    newRange.selectNodeContents(span);
+    sel.addRange(newRange);
+  }
+
+  function setupWysiwyg(editor) {
+    const toolbar = qs('wysiwygToolbar');
+    const colorPicker = qs('fontColorPicker');
+    const fontSizeSelect = qs('fontSizeSelect');
+    const fontFamilySelect = qs('fontFamilySelect');
+    const lineHeightSelect = qs('lineHeightSelect');
+    const insertLinkBtn = qs('insertLinkBtn');
+
+    if (toolbar) {
+      toolbar.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-cmd]');
+        if (!btn) return;
+        e.preventDefault();
+        editor.focus();
+        const cmd = btn.getAttribute('data-cmd');
+        const value = btn.getAttribute('data-value');
+        if (cmd === 'formatBlock' && value) {
+          document.execCommand('formatBlock', false, value);
+        } else {
+          document.execCommand(cmd);
+        }
+      });
+    }
+
+    if (insertLinkBtn) {
+      insertLinkBtn.addEventListener('click', () => {
+        editor.focus();
+        const url = window.prompt('ใส่ลิงก์ (https://...)');
+        if (!url) return;
+        document.execCommand('createLink', false, url);
+      });
+    }
+
+    if (colorPicker) {
+      colorPicker.addEventListener('change', () => {
+        editor.focus();
+        applyInlineStyle(editor, 'color', colorPicker.value);
+      });
+    }
+
+    if (fontSizeSelect) {
+      fontSizeSelect.addEventListener('change', () => {
+        editor.focus();
+        applyInlineStyle(editor, 'font-size', `${fontSizeSelect.value}px`);
+      });
+    }
+
+    if (fontFamilySelect) {
+      fontFamilySelect.addEventListener('change', () => {
+        editor.focus();
+        applyInlineStyle(editor, 'font-family', fontFamilySelect.value);
+      });
+    }
+
+    if (lineHeightSelect) {
+      lineHeightSelect.addEventListener('change', () => {
+        editor.focus();
+        applyInlineStyle(editor, 'line-height', lineHeightSelect.value);
+      });
+    }
+
+    editor.addEventListener('paste', (e) => {
+      if (!e.clipboardData || !e.clipboardData.items) return;
+      const items = Array.from(e.clipboardData.items);
+      const imageItem = items.find(item => item.type && item.type.startsWith('image/'));
+      if (!imageItem) return;
+
+      const file = imageItem.getAsFile();
+      if (!file) return;
+      const maxBytes = 20 * 1024 * 1024;
+      if (file.size > maxBytes) {
+        e.preventDefault();
+        window.alert('รูปใหญ่เกิน 20MB');
+        return;
+      }
+
+      e.preventDefault();
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result;
+        insertHtmlAtCursor(`<img src="${dataUrl}" alt="pasted image" />`);
+        editor.focus();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     const isAdmin = await ensureAdmin();
 
     const notAdmin = qs('notAdmin');
     const form = qs('postForm');
+    const editor = qs('wysiwygEditor');
 
     if (!isAdmin) {
       notAdmin.style.display = 'block';
@@ -684,6 +861,13 @@
 
     setEditorMode(false);
 
+    if (editor) {
+      setupWysiwyg(editor);
+      editor.addEventListener('input', () => {
+        state.contentHtml = editor.innerHTML;
+      });
+    }
+
     const p = new URLSearchParams(window.location.search);
     const editId = Number(p.get('id'));
     const categoryEl = qs('category');
@@ -692,70 +876,14 @@
       const loaded = await loadPostForEdit(editId);
       if (!loaded) return;
     } else {
-      // init category from query param
       const cat = normalizeCategory(p.get('category'));
       if (cat) categoryEl.value = cat;
     }
 
-    // cancel link back to category page
     const cancelLink = qs('cancelLink');
     const currentCategory = normalizeCategory(categoryEl && categoryEl.value ? categoryEl.value : p.get('category'));
     const back = currentCategory === 'news' ? 'news.html' : currentCategory === 'event' ? 'event.html' : 'thai-forum.html';
     cancelLink.setAttribute('href', back);
-
-    qs('addText').addEventListener('click', () => {
-      state.blocks.push({ type: 'text', text: '' });
-      renderBlocksEditor();
-      renderPreview();
-    });
-
-    qs('addLink').addEventListener('click', () => {
-      state.blocks.push({ type: 'link', url: '', label: '' });
-      renderBlocksEditor();
-      renderPreview();
-    });
-
-    qs('addImage').addEventListener('click', () => {
-      state.blocks.push({ type: 'image', src: '', align: 'center', widthPercent: 100, caption: '' });
-      renderBlocksEditor();
-      renderPreview();
-    });
-
-    qs('uploadMedia').addEventListener('click', async () => {
-      const fileInput = qs('mediaFile');
-      const file = fileInput.files && fileInput.files[0];
-      const msg = qs('formMessage');
-
-      if (!file) {
-        setText(msg, 'กรุณาเลือกไฟล์รูปก่อนอัปโหลด');
-        return;
-      }
-
-      setText(msg, 'กำลังอัปโหลดรูป...');
-
-      const fd = new FormData();
-      fd.append('image', file);
-
-      try {
-        const res = await fetch('/api/admin/media', {
-          method: 'POST',
-          credentials: 'include',
-          body: fd
-        });
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          setText(msg, data?.error || 'อัปโหลดไม่สำเร็จ');
-          return;
-        }
-
-        fileInput.value = '';
-        setText(msg, 'อัปโหลดสำเร็จ');
-        await loadMedia();
-      } catch {
-        setText(msg, 'อัปโหลดไม่สำเร็จ');
-      }
-    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -764,9 +892,16 @@
       const category = qs('category').value;
       const title = String(qs('title').value || '').trim();
       const summary = String(qs('summary').value || '').trim();
+      const html = editor ? String(editor.innerHTML || '').trim() : '';
+      const plain = editor ? String(editor.textContent || '').trim() : '';
 
       if (!title) {
         setText(msg, 'กรุณากรอกหัวข้อ');
+        return;
+      }
+
+      if (!plain) {
+        setText(msg, 'กรุณากรอกเนื้อหา');
         return;
       }
 
@@ -776,7 +911,7 @@
         category,
         title,
         summary,
-        content: { blocks: state.blocks }
+        content_html: html
       };
 
       try {
@@ -836,9 +971,5 @@
         }
       });
     }
-
-    renderBlocksEditor();
-    renderPreview();
-    await loadMedia();
   });
 })();
