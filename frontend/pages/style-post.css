@@ -13,17 +13,19 @@ main {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1480px;
   padding: 48px 24px;
 }
 
 .page-content {
   background: white;
-  max-width: 860px;
+  width: 100%;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 36px 40px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .back {
@@ -90,12 +92,17 @@ main {
   line-height: 1.8;
   color: #444;
   font-size: 1.05em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .content a {
   color: #667eea;
   font-weight: 700;
   text-decoration: none;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .content a:hover {
@@ -107,6 +114,8 @@ main {
 }
 
 .img-wrap img {
+  display: block;
+  max-width: 100%;
   height: auto;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -160,6 +169,8 @@ main {
   white-space: pre-wrap;
   line-height: 1.7;
   color: #444;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .comment-form {
@@ -190,6 +201,7 @@ main {
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   font-size: 1em;
+  box-sizing: border-box;
 }
 
 .field textarea {
@@ -232,7 +244,6 @@ main {
   }
 
   .page-content {
-    max-width: 100%;
     padding: 24px 18px;
   }
 }

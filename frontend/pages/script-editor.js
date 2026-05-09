@@ -24,6 +24,21 @@
     }
   }
 
+    function swapBlocks(i, j) {
+      if (!Number.isInteger(i) || !Number.isInteger(j)) return;
+      if (i < 0 || j < 0 || i >= state.blocks.length || j >= state.blocks.length) return;
+      const tmp = state.blocks[i];
+      state.blocks[i] = state.blocks[j];
+      state.blocks[j] = tmp;
+
+      if (state.activeImageBlockIndex === i) state.activeImageBlockIndex = j;
+      else if (state.activeImageBlockIndex === j) state.activeImageBlockIndex = i;
+
+      renderBlocksEditor();
+      renderPreview();
+      renderMediaGallery();
+    }
+
   const state = {
     blocks: [],
     activeImageBlockIndex: null,
@@ -114,7 +129,27 @@
         renderMediaGallery();
       });
 
+      const moveUp = document.createElement('button');
+      moveUp.className = 'move';
+      moveUp.type = 'button';
+      moveUp.textContent = 'ขึ้น';
+      moveUp.disabled = idx === 0;
+      moveUp.addEventListener('click', () => {
+        swapBlocks(idx, idx - 1);
+      });
+
+      const moveDown = document.createElement('button');
+      moveDown.className = 'move';
+      moveDown.type = 'button';
+      moveDown.textContent = 'ลง';
+      moveDown.disabled = idx === state.blocks.length - 1;
+      moveDown.addEventListener('click', () => {
+        swapBlocks(idx, idx + 1);
+      });
+
       row.appendChild(title);
+      row.appendChild(moveUp);
+      row.appendChild(moveDown);
       row.appendChild(remove);
       card.appendChild(row);
 
@@ -264,12 +299,17 @@
     const preview = qs('preview');
     preview.innerHTML = '';
 
+    // simulate final post width so percentage-based image sizes match real scale
+    const sim = document.createElement('div');
+    sim.className = 'preview-sim';
+
     const blocks = state.blocks;
     if (!blocks.length) {
       const empty = document.createElement('div');
       empty.className = 'small';
       empty.textContent = 'ยังไม่มีเนื้อหา';
-      preview.appendChild(empty);
+      sim.appendChild(empty);
+      preview.appendChild(sim);
       return;
     }
 
@@ -282,7 +322,7 @@
           const p = document.createElement('p');
           p.className = 'p';
           p.textContent = line;
-          preview.appendChild(p);
+          sim.appendChild(p);
         });
         return;
       }
@@ -305,7 +345,7 @@
           p.textContent = 'ลิงก์ไม่ถูกต้อง';
         }
 
-        preview.appendChild(p);
+        sim.appendChild(p);
         return;
       }
 
@@ -314,19 +354,26 @@
           const warn = document.createElement('div');
           warn.className = 'small';
           warn.textContent = 'บล็อกรูป: ยังไม่ได้เลือกรูป';
-          preview.appendChild(warn);
+          sim.appendChild(warn);
           return;
         }
 
         const wrap = document.createElement('div');
         wrap.className = 'img-wrap';
-        wrap.style.textAlign = b.align || 'center';
+
+        // align using flex so percentage widths are calculated against the simulated post width
+        const align = String(b.align || 'center').toLowerCase();
+        wrap.style.display = 'flex';
+        wrap.style.flexDirection = 'column';
+        wrap.style.alignItems = align === 'right' ? 'flex-end' : align === 'left' ? 'flex-start' : 'center';
 
         const img = document.createElement('img');
         img.src = b.src;
         img.alt = b.caption ? String(b.caption) : 'image';
         const w = Number(b.widthPercent);
         img.style.width = `${Number.isFinite(w) ? Math.min(Math.max(w, 10), 100) : 100}%`;
+        img.style.maxWidth = '100%';
+        img.style.display = 'block';
 
         wrap.appendChild(img);
 
@@ -337,9 +384,11 @@
           wrap.appendChild(cap);
         }
 
-        preview.appendChild(wrap);
+        sim.appendChild(wrap);
       }
     });
+
+    preview.appendChild(sim);
   }
 
   function renderMediaGallery() {

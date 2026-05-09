@@ -85,7 +85,11 @@
 
         const wrap = document.createElement('div');
         wrap.className = 'img-wrap';
-        wrap.style.textAlign = String(b.align || 'center');
+        const align = String(b.align || 'center').toLowerCase();
+        const justifyContent = align === 'right' ? 'flex-end' : align === 'left' ? 'flex-start' : 'center';
+        wrap.style.display = 'flex';
+        wrap.style.flexDirection = 'column';
+        wrap.style.alignItems = justifyContent;
 
         const img = document.createElement('img');
         img.src = src;
@@ -93,6 +97,7 @@
 
         const w = Number(b.widthPercent);
         img.style.width = `${Number.isFinite(w) ? Math.min(Math.max(w, 10), 100) : 100}%`;
+        img.style.margin = '0';
 
         wrap.appendChild(img);
 

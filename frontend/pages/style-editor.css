@@ -12,11 +12,18 @@ main {
   flex: 1;
 }
 
+.container {
+  max-width: 1400px;
+}
+
 .page-content {
   background: white;
   padding: 28px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
 }
 
 .page-content h2 {
@@ -195,6 +202,24 @@ main {
   background: rgba(0, 0, 0, 0.04);
 }
 
+.block-card .move {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.block-card .move:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.block-card .move:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .block-fields {
   display: grid;
   gap: 10px;
@@ -281,9 +306,14 @@ main {
 
 .preview .img-wrap {
   margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .preview .img-wrap img {
+  display: block;
+  max-width: 100%;
   height: auto;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -293,6 +323,14 @@ main {
   color: #666;
   font-size: 0.95em;
   margin-top: 6px;
+}
+
+/* Simulated post area inside editor preview so percentage widths match final post */
+.preview-sim {
+  max-width: none;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .form-actions {
