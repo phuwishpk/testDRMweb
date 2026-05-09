@@ -161,16 +161,136 @@
         label.className = 'small';
         label.textContent = 'ข้อความ';
 
-        const textarea = document.createElement('textarea');
-        textarea.rows = 4;
-        textarea.value = b.text || '';
-        textarea.addEventListener('input', () => {
-          b.text = textarea.value;
+        // Rich text toolbar
+        const toolbar = document.createElement('div');
+        toolbar.className = 'text-toolbar';
+
+        const boldBtn = document.createElement('button');
+        boldBtn.type = 'button';
+        boldBtn.textContent = 'ตัวหนา';
+        boldBtn.className = 'fmt-btn';
+        boldBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          editor.focus();
+          document.execCommand('bold');
+        });
+        toolbar.appendChild(boldBtn);
+
+        const italicBtn = document.createElement('button');
+        italicBtn.type = 'button';
+        italicBtn.textContent = 'ตัวเอียง';
+        italicBtn.className = 'fmt-btn';
+        italicBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          editor.focus();
+          document.execCommand('italic');
+        });
+        toolbar.appendChild(italicBtn);
+
+        const underlineBtn = document.createElement('button');
+        underlineBtn.type = 'button';
+        underlineBtn.textContent = 'เส้นใต้';
+        underlineBtn.className = 'fmt-btn';
+        underlineBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          editor.focus();
+          document.execCommand('underline');
+        });
+        toolbar.appendChild(underlineBtn);
+
+        const colorLabel = document.createElement('label');
+        colorLabel.textContent = 'สี: ';
+        colorLabel.style.display = 'flex';
+        colorLabel.style.alignItems = 'center';
+        colorLabel.style.gap = '6px';
+        const colorPicker = document.createElement('input');
+        colorPicker.type = 'color';
+        colorPicker.value = '#000000';
+        colorPicker.addEventListener('change', () => {
+          editor.focus();
+          document.execCommand('foreColor', false, colorPicker.value);
+        });
+        colorLabel.appendChild(colorPicker);
+        toolbar.appendChild(colorLabel);
+
+        const fontSizeLabel = document.createElement('label');
+        fontSizeLabel.textContent = 'ขนาด: ';
+        fontSizeLabel.style.display = 'flex';
+        fontSizeLabel.style.alignItems = 'center';
+        fontSizeLabel.style.gap = '6px';
+        const fontSizeSelect = document.createElement('select');
+        ['12', '14', '16', '18', '20', '24', '28', '32'].forEach(sz => {
+          const opt = document.createElement('option');
+          opt.value = sz;
+          opt.textContent = sz + 'px';
+          fontSizeSelect.appendChild(opt);
+        });
+        fontSizeSelect.value = '16';
+        fontSizeSelect.addEventListener('change', () => {
+          editor.focus();
+          const sel = window.getSelection();
+          if (!sel || sel.rangeCount === 0 || sel.toString().length === 0) return;
+
+          const range = sel.getRangeAt(0);
+          const newSize = fontSizeSelect.value + 'px';
+
+          // Replace the full selection with a single span so mixed sizes become uniform.
+          const fragment = range.extractContents();
+          const walker = document.createTreeWalker(fragment, NodeFilter.SHOW_ELEMENT, null);
+          const elementsToClean = [];
+
+          while (walker.nextNode()) {
+            elementsToClean.push(walker.currentNode);
+          }
+
+          elementsToClean.forEach((el) => {
+            if (el && el.style && el.style.fontSize) {
+              el.style.removeProperty('font-size');
+              if (!el.getAttribute('style')) {
+                el.removeAttribute('style');
+              }
+            }
+          });
+
+          const span = document.createElement('span');
+          span.style.fontSize = newSize;
+          span.appendChild(fragment);
+          range.insertNode(span);
+
+          // Re-select the inserted content so the user can keep editing it.
+          sel.removeAllRanges();
+          const newRange = document.createRange();
+          newRange.selectNodeContents(span);
+          sel.addRange(newRange);
+
+          editor.focus();
+          b.html = editor.innerHTML;
+          b.text = editor.innerText;
+          renderPreview();
+        });
+        fontSizeLabel.appendChild(fontSizeSelect);
+        toolbar.appendChild(fontSizeLabel);
+
+        // Contenteditable div for rich text
+        const editor = document.createElement('div');
+        editor.className = 'text-editor';
+        editor.contentEditable = 'true';
+        editor.innerHTML = b.html || b.text || '';
+        editor.style.minHeight = '120px';
+        editor.style.border = '1px solid rgba(0, 0, 0, 0.15)';
+        editor.style.borderRadius = '8px';
+        editor.style.padding = '10px 12px';
+        editor.style.fontSize = '1em';
+        editor.style.fontFamily = 'inherit';
+        editor.addEventListener('input', () => {
+          b.html = editor.innerHTML;
+          b.text = editor.innerText;
           renderPreview();
         });
 
+        fields.appendChild(toolbar);
         fields.appendChild(label);
-        fields.appendChild(textarea);
+        fields.appendChild(editor);
       }
 
       if (b.type === 'link') {
@@ -315,15 +435,24 @@
 
     blocks.forEach((b) => {
       if (b.type === 'text') {
+        const html = String(b.html || '').trim();
         const text = String(b.text || '').trim();
         if (!text) return;
 
-        text.split(/\n+/).forEach(line => {
+        // If we have rich HTML, use it; otherwise use plain text
+        if (html) {
           const p = document.createElement('p');
           p.className = 'p';
-          p.textContent = line;
+          p.innerHTML = html;
           sim.appendChild(p);
-        });
+        } else {
+          text.split(/\n+/).forEach(line => {
+            const p = document.createElement('p');
+            p.className = 'p';
+            p.textContent = line;
+            sim.appendChild(p);
+          });
+        }
         return;
       }
 
