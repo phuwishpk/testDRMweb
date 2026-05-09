@@ -271,6 +271,80 @@
         fontSizeLabel.appendChild(fontSizeSelect);
         toolbar.appendChild(fontSizeLabel);
 
+        const fontFamilyLabel = document.createElement('label');
+        fontFamilyLabel.textContent = 'Font: ';
+        fontFamilyLabel.style.display = 'flex';
+        fontFamilyLabel.style.alignItems = 'center';
+        fontFamilyLabel.style.gap = '6px';
+        const fontFamilySelect = document.createElement('select');
+        [
+          { label: 'Default', value: 'inherit' },
+          { label: 'Arial', value: 'Arial, Helvetica, sans-serif' },
+          { label: 'Times New Roman', value: "'Times New Roman', Times, serif" },
+          { label: 'Courier', value: "'Courier New', Courier, monospace" },
+          { label: 'Georgia', value: 'Georgia, serif' },
+          { label: 'Verdana', value: 'Verdana, sans-serif' },
+          { label: 'Segoe UI', value: "'Segoe UI', sans-serif" },
+          { label: 'Trebuchet MS', value: "'Trebuchet MS', sans-serif" },
+          { label: 'Impact', value: 'Impact, fantasy' },
+          { label: 'Prompt (Thai)', value: "'Prompt', sans-serif" },
+          { label: 'Sarabun (Thai)', value: "'Sarabun', sans-serif" },
+          { label: 'Anuphan (Thai)', value: "'Anuphan', sans-serif" },
+          { label: 'TH SarabunPSK', value: "'TH SarabunPSK', sans-serif" }
+        ].forEach(font => {
+          const opt = document.createElement('option');
+          opt.value = font.value;
+          opt.textContent = font.label;
+          fontFamilySelect.appendChild(opt);
+        });
+        fontFamilySelect.value = 'inherit';
+        fontFamilySelect.addEventListener('change', () => {
+          editor.focus();
+          const sel = window.getSelection();
+          if (!sel || sel.rangeCount === 0 || sel.toString().length === 0) return;
+
+          const range = sel.getRangeAt(0);
+          const newFamily = fontFamilySelect.value;
+
+          // Extract and clean font-family styles
+          const fragment = range.extractContents();
+          const walker = document.createTreeWalker(fragment, NodeFilter.SHOW_ELEMENT, null);
+          const elementsToClean = [];
+
+          while (walker.nextNode()) {
+            elementsToClean.push(walker.currentNode);
+          }
+
+          elementsToClean.forEach((el) => {
+            if (el && el.style && el.style.fontFamily) {
+              el.style.removeProperty('font-family');
+              if (!el.getAttribute('style')) {
+                el.removeAttribute('style');
+              }
+            }
+          });
+
+          const span = document.createElement('span');
+          if (newFamily !== 'inherit') {
+            span.style.fontFamily = newFamily;
+          }
+          span.appendChild(fragment);
+          range.insertNode(span);
+
+          // Re-select the inserted content
+          sel.removeAllRanges();
+          const newRange = document.createRange();
+          newRange.selectNodeContents(span);
+          sel.addRange(newRange);
+
+          editor.focus();
+          b.html = editor.innerHTML;
+          b.text = editor.innerText;
+          renderPreview();
+        });
+        fontFamilyLabel.appendChild(fontFamilySelect);
+        toolbar.appendChild(fontFamilyLabel);
+
         // Contenteditable div for rich text
         const editor = document.createElement('div');
         editor.className = 'text-editor';
