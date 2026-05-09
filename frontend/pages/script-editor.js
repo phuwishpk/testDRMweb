@@ -41,7 +41,8 @@
 
   const state = {
     contentHtml: '',
-    editingPostId: null
+    editingPostId: null,
+    selectedImage: null
   };
 
   function setEditorMode(isEdit) {
@@ -763,6 +764,78 @@
     const fontFamilySelect = qs('fontFamilySelect');
     const lineHeightSelect = qs('lineHeightSelect');
     const insertLinkBtn = qs('insertLinkBtn');
+    const imgSizeRange = qs('imgSizeRange');
+    const imgAlignLeft = qs('imgAlignLeft');
+    const imgAlignCenter = qs('imgAlignCenter');
+    const imgAlignRight = qs('imgAlignRight');
+    const imgReset = qs('imgReset');
+    const imgCaptionBtn = qs('imgCaptionBtn');
+
+    function clearImageSelection() {
+      if (state.selectedImage) {
+        state.selectedImage.classList.remove('img-selected');
+      }
+      state.selectedImage = null;
+    }
+
+    function getImageWidthPercent(img) {
+      if (!img) return 100;
+      const styleWidth = img.style.width || '';
+      const match = styleWidth.match(/(\d+(?:\.\d+)?)%/);
+      if (match) return Math.round(Number(match[1]));
+      const imgWidth = img.getBoundingClientRect().width || 0;
+      const editorWidth = editor.getBoundingClientRect().width || 1;
+      return Math.max(10, Math.min(100, Math.round((imgWidth / editorWidth) * 100)));
+    }
+
+    function updateImageControls(img) {
+      if (!imgSizeRange) return;
+      imgSizeRange.value = String(getImageWidthPercent(img));
+    }
+
+    function ensureFigure(img) {
+      if (!img) return null;
+      const figure = img.closest('figure');
+      if (figure) return figure;
+
+      const wrapper = document.createElement('figure');
+      wrapper.className = 'img-figure';
+      const parent = img.parentNode;
+      parent.insertBefore(wrapper, img);
+      wrapper.appendChild(img);
+      return wrapper;
+    }
+
+    function ensureCaption(img) {
+      const figure = ensureFigure(img);
+      if (!figure) return null;
+      let cap = figure.querySelector('figcaption');
+      if (!cap) {
+        cap = document.createElement('figcaption');
+        cap.setAttribute('contenteditable', 'true');
+        cap.setAttribute('data-placeholder', 'พิมพ์คำอธิบายใต้รูป...');
+        figure.appendChild(cap);
+      }
+      return cap;
+    }
+
+    function setImageAlign(img, align) {
+      if (!img) return;
+      const figure = ensureFigure(img);
+      img.style.display = 'block';
+      if (align === 'left') {
+        img.style.marginLeft = '0';
+        img.style.marginRight = 'auto';
+      } else if (align === 'right') {
+        img.style.marginLeft = 'auto';
+        img.style.marginRight = '0';
+      } else {
+        img.style.marginLeft = 'auto';
+        img.style.marginRight = 'auto';
+      }
+      img.dataset.align = align;
+      if (figure) figure.style.textAlign = align;
+    }
 
     if (toolbar) {
       toolbar.addEventListener('click', (e) => {
@@ -786,6 +859,62 @@
         const url = window.prompt('ใส่ลิงก์ (https://...)');
         if (!url) return;
         document.execCommand('createLink', false, url);
+      });
+    }
+
+    if (imgSizeRange) {
+      imgSizeRange.addEventListener('input', () => {
+        if (!state.selectedImage) return;
+        const value = Math.max(10, Math.min(100, Number(imgSizeRange.value) || 100));
+        state.selectedImage.style.width = `${value}%`;
+      });
+    }
+
+    if (imgAlignLeft) {
+      imgAlignLeft.addEventListener('click', () => {
+        if (!state.selectedImage) return;
+        setImageAlign(state.selectedImage, 'left');
+      });
+    }
+
+    if (imgAlignCenter) {
+      imgAlignCenter.addEventListener('click', () => {
+        if (!state.selectedImage) return;
+        setImageAlign(state.selectedImage, 'center');
+      });
+    }
+
+    if (imgAlignRight) {
+      imgAlignRight.addEventListener('click', () => {
+        if (!state.selectedImage) return;
+        setImageAlign(state.selectedImage, 'right');
+      });
+    }
+
+    if (imgReset) {
+      imgReset.addEventListener('click', () => {
+        if (!state.selectedImage) return;
+        state.selectedImage.style.width = '100%';
+        setImageAlign(state.selectedImage, 'center');
+        if (imgSizeRange) imgSizeRange.value = '100';
+        const fig = state.selectedImage.closest('figure');
+        if (fig) {
+          const cap = fig.querySelector('figcaption');
+          if (cap) cap.remove();
+        }
+      });
+    }
+
+    if (imgCaptionBtn) {
+      imgCaptionBtn.addEventListener('click', () => {
+        if (!state.selectedImage) {
+          window.alert('กรุณาคลิกรูปก่อน');
+          return;
+        }
+        const cap = ensureCaption(state.selectedImage);
+        if (cap) {
+          cap.focus();
+        }
       });
     }
 
@@ -836,10 +965,34 @@
       const reader = new FileReader();
       reader.onload = () => {
         const dataUrl = reader.result;
-        insertHtmlAtCursor(`<img src="${dataUrl}" alt="pasted image" />`);
+        insertHtmlAtCursor(
+          `<figure class="img-figure"><img src="${dataUrl}" alt="pasted image" /></figure>`
+        );
         editor.focus();
       };
       reader.readAsDataURL(file);
+    });
+
+    editor.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target && target.tagName === 'IMG') {
+        if (state.selectedImage && state.selectedImage !== target) {
+          state.selectedImage.classList.remove('img-selected');
+        }
+        state.selectedImage = target;
+        target.classList.add('img-selected');
+        updateImageControls(target);
+      } else {
+        clearImageSelection();
+      }
+    });
+
+    editor.addEventListener('input', (e) => {
+      const target = e.target;
+      if (target && target.tagName === 'FIGCAPTION') {
+        // Keep caption editable and within the editor
+        target.setAttribute('contenteditable', 'true');
+      }
     });
   }
 

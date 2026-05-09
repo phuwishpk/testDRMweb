@@ -118,6 +118,17 @@ main {
   border-radius: 10px;
 }
 
+.content figure {
+  margin: 12px 0;
+  text-align: center;
+}
+
+.content figcaption {
+  margin-top: 6px;
+  font-size: 0.95em;
+  color: #666;
+}
+
 .content a {
   color: #667eea;
   font-weight: 700;
